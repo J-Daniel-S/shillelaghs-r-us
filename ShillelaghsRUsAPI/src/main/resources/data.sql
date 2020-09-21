@@ -1,0 +1,27 @@
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (1, 'Lil Stevie', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (2, 'Black Thunder', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (3, 'Blanche', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (4, 'Knobby McGee', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (5, 'Blackthorn Original', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (6, 'SheepGuard, Guardian of the Sheep', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (7, 'Uncle Pete', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (8, 'Krakanos', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (9, 'Astoria', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (10, 'Mirror Pond', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (11, 'The Stony Cudgel', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (12, 'Harding', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (13, 'Stinson', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (14, 'Right Angle Arnie', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (15, 'Long Throw Larry', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (16, 'Timestopper', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (17, 'Martin Fury', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (18,'Drifting Dorry', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (19, 'Sparkles', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (20, 'Swanson', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (21, 'Samsonite', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (22, 'Ronald', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (23, 'Samwise', false, false);
+INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped) VALUES (24, 'Jeff', false, false);
+
+INSERT INTO customers (customer_id, first_name, last_name, address) VALUES (1, 'Morton', 'Higsby', '9999 Placeyplace Dr Kevinson, KY 24468');
+INSERT INTO customers (customer_id, first_name, last_name, address) VALUES (2, 'Kilsburton', 'Portersmouth', '103 Yorkinson Pl Martinson, GA 34417');                                                 

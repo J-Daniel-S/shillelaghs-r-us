@@ -1,0 +1,109 @@
+package shillelaghsrus.entities;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Table(name = "orders")
+public class Order {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "order_id", allocationSize = 1)
+	private long orderId;
+	@Column(name = "time")
+	private LocalDateTime orderDate;
+	@Column(nullable = false)
+	private String address;
+	@Column
+	private boolean shipped;
+	@OneToMany(targetEntity = Shillelagh.class, fetch = FetchType.LAZY, mappedBy = "order")
+	@Column(nullable = false)
+	private List<Shillelagh> contents;
+	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "customer_id")
+	@JsonIgnore
+	private Customer customer;
+
+	public Order(LocalDateTime time, String address, Customer customer, List<Shillelagh> contents) {
+		this.orderDate = time;
+		this.address = address;
+		this.customer = customer;
+		this.contents = contents;
+		this.shipped = false;
+	}
+
+	public Order(Customer customer) {
+		super();
+		this.customer = customer;
+		this.contents = new ArrayList<Shillelagh>();
+		this.shipped = false;
+	}
+
+	public Order() {
+		super();
+		this.contents = new ArrayList<Shillelagh>();
+		this.shipped = false;
+	}
+
+	public List<Shillelagh> getContents() {
+		return contents;
+	}
+
+	public void setContents(List<Shillelagh> contents) {
+		this.contents = contents;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public void setOrderId(long orderId) {
+		this.orderId = orderId;
+	}
+
+	public LocalDateTime getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(LocalDateTime orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public long getOrderId() {
+		return orderId;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", address=" + address + "]";
+	}
+
+}
