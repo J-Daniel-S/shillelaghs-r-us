@@ -1,0 +1,14 @@
+.header {
+	padding: 0;
+	margin: 0;
+	background-image: url(../resources/shillelaghCropped.jpg);
+	background-size: cover;
+	background-repeat: no-repeat;
+	position: absolute;
+	width: 100vw;
+	height: 25vh;
+}
+
+.headerBar {
+	margin: 25vh 0 0 0;
+}

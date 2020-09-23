@@ -1,4 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-ReactDOM.render(<p>Hello world!!!</p>, document.getElementById('root'));
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'bootstrap-css-only/css/bootstrap.min.css';
+import 'mdbreact/dist/css/mdb.css';
+
+import App from './shillelaghsrus/App';
+
+ReactDOM.render(<App />, document.getElementById('root'));

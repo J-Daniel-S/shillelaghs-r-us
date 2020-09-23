@@ -2,6 +2,7 @@ package shillelaghsrus.dao;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +13,8 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
 	@Override
 	public List<Customer> findAll();
+
+	@Query(nativeQuery = true, value = "SELECT customer_id FROM customers WHERE first_name = ?1")
+	public Long findIdByName(String name);
 
 }

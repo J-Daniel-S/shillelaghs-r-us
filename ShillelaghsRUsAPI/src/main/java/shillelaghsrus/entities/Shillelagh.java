@@ -1,5 +1,7 @@
 package shillelaghsrus.entities;
 
+import java.text.DecimalFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,20 +34,40 @@ public class Shillelagh {
 	private Order order;
 	@Column(nullable = false)
 	private String name;
+	@Column
+	private String price;
 
 	public Shillelagh(String name) {
 		this.name = name;
 		this.ordered = false;
 		this.shipped = false;
+		this.price = generatePrice();
 	}
 
 	public Shillelagh() {
 		this.ordered = false;
 		this.shipped = false;
+		this.price = generatePrice();
 	}
 
 	public void setShillelaghId(long id) {
 		this.shillelaghId = id;
+		this.price = generatePrice();
+	}
+
+	public String generatePrice() {
+		double thePrice = 21 + Math.random() * 40;
+		DecimalFormat df = new DecimalFormat("##.00");
+		String price = df.format(thePrice);
+		return price;
+	}
+
+	public String getPrice() {
+		return price;
+	}
+
+	public void setPrice(String price) {
+		this.price = price;
 	}
 
 	public long getShillelaghId() {

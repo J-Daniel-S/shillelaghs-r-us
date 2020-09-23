@@ -41,6 +41,11 @@ public class CustomerController {
 		}
 	}
 
+	@GetMapping("/name/{name}")
+	public ResponseEntity<Long> getIdByName(@PathVariable String name) {
+		return ResponseEntity.status(HttpStatus.FOUND).body(cusRepo.findIdByName(name));
+	}
+
 	@GetMapping("/{id}/orders")
 	public ResponseEntity<List<Order>> getCustomerOrders(@PathVariable long id) {
 		if (cusRepo.exists(id)) {

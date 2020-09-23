@@ -1,7 +1,6 @@
 package shillelaghsrus.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +28,8 @@ public class CustomerService {
 		}
 	}
 
-	public Optional<Customer> findByName(String name) {
-		// customer by name
-		System.out.println("not implemented");
-		return Optional.empty();
+	public Long findIdByName(String name) {
+		return cusRepo.findIdByName(name);
 	}
 
 	public Iterable<Customer> findAllById(List<Long> ids) {
