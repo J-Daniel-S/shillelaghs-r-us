@@ -5,11 +5,10 @@ import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../../../context/ShillelaghContext';
 
-const signIn = (props) => {
+const forgotUsername = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer] = useContext(ShillelaghContext);
-	const [username, setUsername] = useState();
-	const [password, setPassword] = useState();
+	const [email, setEmail] = useState();
 	const { history } = useReactRouter();
 
 	useEffect(() => {
@@ -17,63 +16,38 @@ const signIn = (props) => {
 	}, []);
 
 	const changed = input => event => {
-		switch (input) {
-			case "username":
-				setUsername(event.target.value);
-				break;
-			case "password":
-				setPassword(event.target.value);
-				break;
-			default:
-				break;
-		}
+		setEmail(event.target.value);
 	}
 
-	const login = (event) => {
+	const submitted = (event) => {
 		event.preventDefault();
-
-		const credentials = {
-			username: username,
-			password: password
-		}
-
-		setCustomer(credentials);
-		history.push("/shillelaghs-r-us/home");
+		alert("You will receive an email with your username shortly");
+		history.push("/shillelaghs-r-us/sign-in");
 	}
 
 	return (
 		<MDBCard>
 			<MDBCardBody>
-				<form onSubmit={login}>
-					<p className="h4 text-center py-4">Welcome back!</p>
+				<form onSubmit={submitted}>
+					<p className="h4 text-center py-4">Forgot username</p>
 					<div className="grey-text">
-						<MDBIcon icon="user" />
+						<MDBIcon icon="email" />
 						<MDBInput
-							label="Your username"
+							label="Your email"
 							group
-							type="text"
+							type="email"
 							validate
 							error="wrong"
 							success="right"
-							value={username}
-							onChange={changed("username")}
+							value={email}
+							onChange={changed()}
 							required
 							id="focus"
-						/>
-						<MDBIcon icon="lock" />
-						<MDBInput
-							label="Your password"
-							group
-							type="password"
-							validate
-							value={password}
-							onChange={changed("password")}
-							required
 						/>
 					</div>
 					<div className="text-center py-4 mt-3">
 						<Button variant="brown" type="submit">
-							Sign in
+							Submit
                  						</Button>
 					</div>
 				</form>
@@ -82,4 +56,4 @@ const signIn = (props) => {
 	);
 }
 
-export default signIn;
+export default forgotUsername;

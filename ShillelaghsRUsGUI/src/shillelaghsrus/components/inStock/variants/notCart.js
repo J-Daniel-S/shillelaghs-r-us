@@ -1,31 +1,13 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React from 'react';
 import { MDBContainer, MDBCard, MDBCardHeader, MDBCardBody, MDBCardFooter, MDBRow, MDBCol } from 'mdbreact';
 import { CardColumns, Button } from 'react-bootstrap';
 
-import ShillelaghContext from '../context/ShillelaghContext';
+const notCart = (props) => {
 
-const inStock = (props) => {
-	const [stock, setStock] = useState([]);
-	const [shillelaghs, setShillelaghs] = useContext(ShillelaghContext);
-
-
-	useEffect(() => {
-		const available = [];
-
-		for (let shi of shillelaghs) {
-			if (!shi.ordered) {
-				available.push(shi);
-			}
-		}
-		
-		setStock(available);
-	}, [shillelaghs]);
-
-	return (
-		<article style={{ margin: '25vh 0 0 0' }}>
-			<MDBContainer>
+	return(
+		<MDBContainer>
 				<CardColumns>
-					{stock && stock.map(s => (
+					{props.stock && props.stock.map(s => (
 						<MDBCard key={s.shillelaghId}>
 							<MDBCardHeader>
 								<MDBRow>
@@ -46,7 +28,7 @@ const inStock = (props) => {
 									<MDBCol size="2">
 									</MDBCol>
 									<MDBCol>
-										<Button variant="brown" onClick={() => console.log('cart button clicked')} >Add to cart</Button>
+										<Button variant="brown" onClick={() => props.addToCart(s)} >Add to cart</Button>
 									</MDBCol>
 									<MDBCol size="2">
 									</MDBCol>
@@ -56,8 +38,7 @@ const inStock = (props) => {
 					))}
 				</CardColumns>
 			</MDBContainer>
-		</article>
 	);
 }
 
-export default inStock;
+export default notCart;
