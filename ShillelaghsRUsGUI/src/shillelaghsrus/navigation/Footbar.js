@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol } from 'mdbreact';
 import styled from 'styled-components';
 import useReactRouter from 'use-react-router';
 
+import ShillelaghContext from '../context/ShillelaghContext';
+
 const footbar = (props) => {
 	const { history } = useReactRouter();
-	
+	// eslint-disable-next-line
+	const [ shillelaghs, setShillelaghs, customer ] = useContext(ShillelaghContext);
 
 	const Li = styled.li`
 	
@@ -29,6 +32,14 @@ const footbar = (props) => {
 		history.push("/shillelaghs-r-us/contact");
 	}
 
+	const accountClicked = () => {
+		if (customer) {
+		history.push("/shillelaghs-r-us/account")
+		} else {
+			history.push("/shillelaghs-r-us/sign-in");
+		}
+	}
+
 	return (
 		<MDBFooter color="light-green darken-4" className="font-small pt-4 mt-4">
 			<MDBContainer fluid>
@@ -44,7 +55,7 @@ const footbar = (props) => {
 								<span onClick={() => homeClicked()}>Storefront</span>
 							</Li>
 							<Li className="list-unstyled">
-								<span>Your account</span>
+								<span onClick={() => accountClicked()}>Your account</span>
 							</Li>
 							<Li className="list-unstyled">
 								<span onClick={() => contactClicked()}>Contact us</span>

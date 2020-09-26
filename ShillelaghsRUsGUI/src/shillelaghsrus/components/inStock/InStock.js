@@ -20,7 +20,6 @@ const inStock = (props) => {
 				available.push(shi);
 			}
 		}
-		
 		setStock(available);
 	}, [shillelaghs, cartContents]);
 
@@ -30,8 +29,10 @@ const inStock = (props) => {
 		setCartContents(arr);
 	}
 
-	const removeFromCart = (shillelagh) => {
-		console.log('remove clicked ' + shillelagh.name)
+	const removeFromCart = (index) => {
+		const arr = [...cartContents];
+		arr.splice(index, 1);
+		setCartContents(arr);
 	}
 
 	let cartButton;
@@ -46,10 +47,9 @@ const inStock = (props) => {
 
 	return (
 		<article style={{ margin: '25vh 0 0 0' }}>
-			{ customer && !cartOpen && cartButton }
-			{ customer && cartOpen && cartButton }
+			{ (cartContents.length > 0 || cartOpen) && cartButton }
 			{ !cartOpen && <NotCart stock={stock} addToCart={addToCart} /> }
-			{ cartOpen && <CartOpen stock={stock} cart={cartContents} addToCart={addToCart} removeFromCart={removeFromCart} /> }
+			{ cartOpen && <CartOpen stock={stock} addToCart={addToCart} removeFromCart={removeFromCart} /> }
 		</article>
 	);
 }

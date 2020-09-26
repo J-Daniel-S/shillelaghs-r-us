@@ -7,7 +7,7 @@ import ShillelaghContext from '../context/ShillelaghContext';
 
 const navbar = (props) => {
 	// eslint-disable-next-line
-	const [ shillelaghs, setShillelaghs, customer, setCustomer ] = useContext(ShillelaghContext);
+	const [shillelaghs, setShillelaghs, customer, setCustomer] = useContext(ShillelaghContext);
 	const { history } = useReactRouter();
 
 	const Span = styled.span`
@@ -27,8 +27,12 @@ const navbar = (props) => {
 		history.push("/shillelaghs-r-us/sign-in");
 	}
 
+	const goToAccount = () => {
+		history.push("/shillelaghs-r-us/account");
+	}
+
 	let theCustomer;
-	
+
 	if (customer) {
 		theCustomer = "Welcome back " + customer.username + "!";
 	}
@@ -36,7 +40,7 @@ const navbar = (props) => {
 	const logout = () => {
 		setCustomer(null);
 	}
-		
+
 	return (
 		<MDBNavbar color="light-green darken-4" expand="lg" className="white-text">
 			<MDBNavbarBrand>
@@ -44,15 +48,18 @@ const navbar = (props) => {
 			</MDBNavbarBrand>
 			<MDBNavbarNav right>
 				<MDBNavItem>
-				{ !customer && <h5>Welcome!</h5> }
-				{ customer && <Span onClick={() => console.log("go to account")}> { theCustomer } </Span>}
+					{!customer && <h5>Welcome!</h5>}
+					{customer &&
+						<Span onClick={() => goToAccount()}>
+							{theCustomer}
+						</Span>}
 				</MDBNavItem>
-				<MDBNavItem>
-					{ customer && <Span onClick={() => logout()} >Logout</Span> }
-					{ !customer && <Span onClick={() => signIn()}>Sign in / register</Span> }
-				</MDBNavItem>
+			<MDBNavItem>
+				{customer && <Span onClick={() => logout()} >Logout</Span>}
+				{!customer && <Span onClick={() => signIn()}>Sign in / register</Span>}
+			</MDBNavItem>
 			</MDBNavbarNav>
-		</MDBNavbar>
+		</MDBNavbar >
 
 	);
 }
