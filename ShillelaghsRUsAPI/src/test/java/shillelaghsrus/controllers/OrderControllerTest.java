@@ -93,11 +93,11 @@ public class OrderControllerTest {
 		when(shiRepo.findbyId(anyList())).thenReturn(theContents);
 
 		// when
-		ResponseEntity<Order> response = controller.placeOrder(secondOrder, timmy.getId());
-		Order theOrder = response.getBody();
+		ResponseEntity<Customer> response = controller.placeOrder(secondOrder, timmy.getId());
+		Customer theCustomer = response.getBody();
 
 		// then
-		assertThat(theOrder.getContents()).contains(newShillelagh);
+		assertThat(theCustomer.getId()).isEqualTo(timmy.getId());
 	}
 
 	@SuppressWarnings("rawtypes")

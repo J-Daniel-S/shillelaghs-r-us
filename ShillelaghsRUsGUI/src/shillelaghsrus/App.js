@@ -29,7 +29,9 @@ const app = (props) => {
 			setShillelaghs(res.data)
 		}
 		);
-	}, [shillelaghs]);
+	}, []);
+
+	//try using a variable that is reset each time it rerenders
 
 	const postOrder = () => {
 		let address;

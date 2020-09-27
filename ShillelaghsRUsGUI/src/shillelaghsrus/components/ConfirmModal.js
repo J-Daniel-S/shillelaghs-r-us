@@ -12,8 +12,8 @@ const confirmModal = (props) => {
 	const confirmed = () => {
 		setConfirm(false);
 		setCartOpen(false);
-		history.push('/shillelaghs-r-us/home');
 		props.order();
+		setTimeout(() => history.push('/shillelaghs-r-us/home'), 500);
 	}
 
 	return (

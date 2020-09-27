@@ -24,4 +24,4 @@ INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (2
 INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (24, 'Jeff', false, false, 30.00);
 
 INSERT INTO customers (customer_id, username, first_name, last_name, address) VALUES (1, 'morty88theCleansed', 'morton', 'higsby', '9999 Placeyplace Dr Kevinson, KY 24468');
-INSERT INTO customers (customer_id, username, first_name, last_name, address) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417');                                                 
+INSERT INTO customers (customer_id, username, first_name, last_name, address) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417');

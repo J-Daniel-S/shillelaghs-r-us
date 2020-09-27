@@ -43,7 +43,7 @@ const cartPanel = (props) => {
 				<ul>
 					{cartContents.length === 0 && <li className="list-unstyled">You haven't added anything yet</li>}
 					{cartContents && cartContents.map((s, index) => (
-						<React.Fragment>
+						<React.Fragment key={index}>
 							<li className="list-unstyled" key={s.shillelaghId}>
 								<MDBRow>
 									<MDBCol size="9">

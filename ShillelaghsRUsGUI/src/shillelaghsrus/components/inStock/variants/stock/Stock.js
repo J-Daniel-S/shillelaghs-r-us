@@ -3,7 +3,6 @@ import { MDBCard, MDBCardHeader, MDBCardBody, MDBRow, MDBCol, MDBCardFooter } fr
 import { Button, CardColumns } from 'react-bootstrap';
 
 const stock = (props) => {
-
 	return (
 		<CardColumns>
 			{props.stock && props.stock.map(s => (

@@ -11,3 +11,16 @@ export const AButton = styled.i`
 export const Info = styled.span`
 	margin: 0.5vh 1vw;
 `;
+
+export const Clickable = styled.span`
+	cursor: pointer;
+
+	&:hover {
+		color: grey;
+	}
+
+	&:active {
+		color: orange;
+		font-size: 1.3rem;
+	}
+`;

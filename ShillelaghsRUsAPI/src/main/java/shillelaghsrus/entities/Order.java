@@ -36,7 +36,7 @@ public class Order {
 	@Column(nullable = false)
 	private List<Shillelagh> contents;
 	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id")
+	@JoinColumn(name = "customer_id", nullable = true)
 	@JsonIgnore
 	private Customer customer;
 

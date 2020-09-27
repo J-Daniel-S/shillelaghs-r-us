@@ -8,14 +8,17 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import shillelaghsrus.entities.Customer;
 import shillelaghsrus.entities.Order;
 import shillelaghsrus.entities.Shillelagh;
 import shillelaghsrus.exceptions.NoSuchOrderException;
@@ -27,6 +30,8 @@ import shillelaghsrus.services.ShillelaghService;
 
 @RestController
 @RequestMapping("/orders")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", methods = { RequestMethod.POST, RequestMethod.GET,
+		RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS })
 public class OrderController {
 
 	@Autowired
@@ -53,9 +58,13 @@ public class OrderController {
 	}
 
 	@PostMapping("/{id}")
-	public ResponseEntity<Order> placeOrder(@RequestBody Order order, @PathVariable("id") long customerId) {
+	public ResponseEntity<Customer> placeOrder(@RequestBody Order order, @PathVariable("id") long customerId) {
+		if (customerId == -1) {
+			order.setCustomer(null);
+		} else {
+			order.setCustomer(cusRepo.findById(customerId));
+		}
 		order.setOrderDate(LocalDateTime.now());
-		order.setCustomer(cusRepo.findById(customerId));
 		if (order.getAddress() == null) {
 			order.setAddress(cusRepo.findById(customerId).getAddress());
 		}
@@ -80,7 +89,8 @@ public class OrderController {
 		if (oRepo.exists(order.getOrderId())) {
 			// sets Shillelagh.ordered to true for each shillelagh in order
 			shiRepo.orderShillelaghs(shillelaghIds);
-			return ResponseEntity.status(HttpStatus.CREATED).body(order);
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(customerId == -1 ? null : cusRepo.findById(customerId));
 		} else {
 			throw new RuntimeException(
 					"Order not created: customerId-" + customerId + " orderId-" + order.getOrderId());
