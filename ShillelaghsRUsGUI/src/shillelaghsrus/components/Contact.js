@@ -2,9 +2,11 @@ import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBInput, MDBCard, MDBCardHeader, MDBCardBody } from 'mdbreact';
 import { Button } from 'react-bootstrap';
 
+import { Article } from './styles/Styles';
+
 const contact = (props) => {
 	return (
-		<article style={{ margin: '26vh 0 0 0' }}>
+		<Article>
 			<MDBContainer>
 				<MDBCard>
 					<MDBCardHeader>
@@ -38,7 +40,7 @@ const contact = (props) => {
 					</MDBCardBody>
 				</MDBCard>
 			</MDBContainer>
-		</article>
+		</Article>
 	);
 
 }

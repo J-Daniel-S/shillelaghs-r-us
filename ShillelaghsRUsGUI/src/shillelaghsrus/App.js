@@ -6,11 +6,11 @@ import Header from './header/Header';
 import Footbar from './navigation/Footbar';
 import InStock from './components/inStock/InStock';
 import SignInUp from './components/signInRegister/signInUp';
-import Account from './components/Account';
+import Account from './components/account/Account';
 import Contact from './components/Contact';
 import History from './components/History';
 import ShillelaghContext from './context/ShillelaghContext';
-import Checkout from './components/Checkout';
+import Checkout from './components/checkout/Checkout';
 import ConfirmModal from './components/ConfirmModal';
 import './App.css';
 
@@ -21,17 +21,20 @@ const app = (props) => {
 	const [cartContents, setCartContents] = useState([]);
 	const [confirm, setConfirm] = useState(false);
 	const [order, setOrder] = useState(null);
+	const [ price, setPrice] = useState();
+	const [queryNeeded, setQueryNeeded] = useState(false);
 
-	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder];
+	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice];
 
 	useEffect(() => {
 		axios.get('http://localhost:8090/shillelaghs-r-us/shillelaghs/').then(res => {
 			setShillelaghs(res.data)
 		}
 		);
-	}, []);
-
-	//try using a variable that is reset each time it rerenders
+		if (queryNeeded) {
+			setQueryNeeded(false)
+		}
+	}, [queryNeeded]);
 
 	const postOrder = () => {
 		let address;
@@ -51,7 +54,8 @@ const app = (props) => {
 
 		const theOrder = {
 			contents: [...cartContents],
-			address: address
+			address: address,
+			totalPrice: price
 		};
 
 		setOrder(theOrder);
@@ -79,6 +83,12 @@ const app = (props) => {
 		setConfirm(true);
 	}
 
+	const removeFromCart = (index) => {
+		const arr = [...cartContents];
+		arr.splice(index, 1);
+		setCartContents(arr);
+	}
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
@@ -87,13 +97,13 @@ const app = (props) => {
 
 					{window.location.pathname === "/" || window.location.pathname === "/shillelaghs-r-us/" ? <Redirect to="/shillelaghs-r-us/home" /> : null}
 
-					<Route exact path="/shillelaghs-r-us/home" component={InStock} />
+					<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
 					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
 					<Route exact path="/shillelaghs-r-us/account" component={Account} />
 					<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
 					<Route exact path="/shillelaghs-r-us/history" component={History} />
-					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={() => checkoutClicked()} />} />
-					{confirm && <ConfirmModal order={postOrder} />}
+					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={() => checkoutClicked()} removeFromCart={removeFromCart} />} />
+					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
 
 					<Footbar />
 				</BrowserRouter>

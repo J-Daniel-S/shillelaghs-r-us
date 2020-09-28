@@ -1,16 +1,42 @@
-import React, { useContext } from 'react';
-import { MDBContainer, MDBCard, MDBCardHeader, MDBCardBody, MDBCardFooter, MDBJumbotron, MDBIcon } from 'mdbreact';
+import React, { useContext, useState, useEffect } from 'react';
+import { MDBContainer, MDBCard, MDBCardHeader, MDBCardBody, MDBCardFooter, MDBJumbotron, MDBIcon, MDBRow, MDBCol } from 'mdbreact';
 import { Redirect } from 'react-router-dom';
-
-import ShillelaghContext from '../context/ShillelaghContext';
 import { Button } from 'react-bootstrap';
+
+import ShillelaghContext from '../../context/ShillelaghContext';
+import { Article } from '../styles/Styles';
+
 
 const account = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents] = useContext(ShillelaghContext);
+	const [orders, setOrders] = useState([]);
+
+	useEffect(() => {
+
+		if (customer) {
+
+			fetch(
+				'http://localhost:8090/shillelaghs-r-us/orders/customer/' + customer.id,
+				{
+					method: 'GET',
+					headers: {
+						Accept: 'application/json, text/plain, */*'
+					}
+				}
+			).then(res => {
+				if (res.status === 302) {
+					res.json().then(res => setOrders(res));
+				} else {
+					setOrders([]);
+				}
+			});
+		}
+
+	}, [customer])
 
 	return (
-		<article style={{ margin: '25vh 0 0 0' }}>
+		<Article>
 			{!customer && <Redirect to="/shillelaghs-r-us/sign-in" />}
 			<MDBContainer>
 				<MDBJumbotron>
@@ -82,14 +108,39 @@ const account = (props) => {
 						<p><MDBIcon icon="scroll" /> Orders</p>
 					</MDBCardHeader>
 					<MDBCardBody>
-						<p>body</p>
+						{customer && orders.length === 0 && <p>No orders yet.  Buy yourself a shillelagh!</p>}
+						{orders.length > 0 && <hr></hr>}
+						{customer && orders.length > 0 && orders.map(o => (
+							<React.Fragment key={o.orderId}>
+								<MDBRow>
+									<MDBCol size="2">
+										Order number: <p>{o.orderId}</p>
+									</MDBCol>
+									<MDBCol size="4">
+										Shipped to: <p>{o.address}</p>
+									</MDBCol>
+									<MDBCol size="3">
+										Total: <p>${o.totalPrice}</p>
+									</MDBCol>
+									<MDBCol size="3">
+										Shillelaghs:
+									{o.contents.map(s => <p key={s.shillelaghId}>{s.name}</p>)}
+									</MDBCol>
+								</MDBRow>
+								<MDBRow>
+									<MDBCol>
+										Payment method: add payment method
+									</MDBCol>
+								</MDBRow>
+								<hr></hr>
+							</React.Fragment>
+						))}
 					</MDBCardBody>
 					<MDBCardFooter>
-						<p className="float-right">footer</p>
 					</MDBCardFooter>
 				</MDBCard>
 			</MDBContainer>
-		</article>
+		</Article>
 	);
 }
 

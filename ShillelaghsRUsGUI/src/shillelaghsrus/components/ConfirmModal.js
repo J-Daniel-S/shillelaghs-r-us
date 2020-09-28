@@ -10,10 +10,11 @@ const confirmModal = (props) => {
 	const [ shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm ] = useContext(ShillelaghContext);
 
 	const confirmed = () => {
+		props.refresh(true);
 		setConfirm(false);
 		setCartOpen(false);
 		props.order();
-		setTimeout(() => history.push('/shillelaghs-r-us/home'), 500);
+		history.push('/shillelaghs-r-us/home');
 	}
 
 	return (

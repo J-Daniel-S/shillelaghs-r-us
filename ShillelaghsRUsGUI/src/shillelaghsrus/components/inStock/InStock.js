@@ -29,12 +29,6 @@ const inStock = (props) => {
 		setCartContents(arr);
 	}
 
-	const removeFromCart = (index) => {
-		const arr = [...cartContents];
-		arr.splice(index, 1);
-		setCartContents(arr);
-	}
-
 	let cartButton;
 	
 	if (!cartOpen) {
@@ -49,7 +43,7 @@ const inStock = (props) => {
 		<article style={{ margin: '25vh 0 0 0' }}>
 			{ (cartContents.length > 0 || cartOpen) && cartButton }
 			{ !cartOpen && <NotCart stock={stock} addToCart={addToCart} /> }
-			{ cartOpen && <CartOpen stock={stock} addToCart={addToCart} removeFromCart={removeFromCart} /> }
+			{ cartOpen && <CartOpen stock={stock} addToCart={addToCart} removeFromCart={props.removeFromCart} /> }
 		</article>
 	);
 }

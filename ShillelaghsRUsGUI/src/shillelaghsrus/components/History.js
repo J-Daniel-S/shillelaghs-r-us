@@ -1,9 +1,11 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardHeader, MDBCardBody } from 'mdbreact';
 
+import { Article } from './styles/Styles';
+
 const history = (props) => {
 	return(
-		<article style={{ margin: '26vh 0 0 0' }}>
+		<Article>
 			<MDBContainer>
 				<MDBCard>
 					<MDBCardHeader>
@@ -36,7 +38,7 @@ const history = (props) => {
 					</MDBCardBody>
 				</MDBCard>
 			</MDBContainer>
-		</article>
+		</Article>
 	);
 }
 

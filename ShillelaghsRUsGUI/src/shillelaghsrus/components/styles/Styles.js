@@ -24,3 +24,24 @@ export const Clickable = styled.span`
 		font-size: 1.3rem;
 	}
 `;
+
+export const Article = styled.article`
+	margin: 26vh 0 0 0;
+`;
+
+export const Toggle = styled.span`
+	cursor: pointer;
+
+	&:hover {
+		color: #d0d6e2;
+	}
+
+`;
+
+export const Span = styled.span`
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;

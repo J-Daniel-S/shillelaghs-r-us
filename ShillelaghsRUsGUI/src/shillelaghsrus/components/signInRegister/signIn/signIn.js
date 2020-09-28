@@ -32,13 +32,52 @@ const signIn = (props) => {
 	const login = (event) => {
 		event.preventDefault();
 
-		const credentials = {
-			username: username,
-			password: password
-		}
+		// const credentials = {
+		// 	username: username,
+		// 	password: password
+		// }
 
-		setCustomer(credentials);
-		history.push("/shillelaghs-r-us/home");
+		// axios.get('http://localhost:8090/shillelaghs-r-us/customers/name/' + username).then(res => {
+		// 	console.log(res)
+		// 	if (res.status === 302) {
+		// 		setCustomer(res.data);
+		// 		if (window.location.pathname === "/shillelaghs-r-us/sign-in") {
+		// 			history.push("/shillelaghs-r-us/home");
+		// 		} else if (window.location.pathname === "/shillelaghs-r-us/sign-in/checkout") {
+		// 			history.push("/shillelaghs-r-us/checkout");
+		// 		}
+		// 	} else {
+		// 		setUsername('');
+		// 		setPassword('');
+		// 		alert('Customer not found!  Is your username correct?');
+		// 	}
+		// }
+		// );
+
+		fetch(
+			'http://localhost:8090/shillelaghs-r-us/customers/name/' + username,
+			{
+				method: 'GET',
+				headers: {
+					Accept: 'application/json, text/plain, */*'
+				}
+			}
+		).then(res => {
+			if (res.status === 302) {
+				res.json().then(res => {
+					setCustomer(res);
+					if (window.location.pathname === "/shillelaghs-r-us/sign-in") {
+						history.push("/shillelaghs-r-us/home");
+					} else if (window.location.pathname === "/shillelaghs-r-us/sign-in/checkout") {
+						history.push("/shillelaghs-r-us/checkout");
+					}
+				})
+			} else {
+				setUsername('');
+				setPassword('');
+				alert('Customer not found!  Is your username correct?');
+			}
+		});
 	}
 
 	return (

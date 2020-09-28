@@ -1,38 +1,20 @@
 import React, { useState } from 'react';
 import { MDBContainer, MDBBreadcrumb, MDBBreadcrumbItem, MDBIcon } from 'mdbreact';
-import styled from 'styled-components';
 import useReactRouter from 'use-react-router';
 
 import Register from './register/Register';
 import SignIn from './signIn/signIn';
 import Forgot from './forgot/Forgot';
+import { Article, Toggle, Span } from '../styles/Styles';
 
 const signInUp = (props) => {
 	const [register, setRegister] = useState(false);
 	const [username, setUsername] = useState(false);
 	const { history } = useReactRouter();
 
-	const Toggle = styled.span`
-
-		cursor: pointer;
-
-		&:hover {
-			color: #d0d6e2;
-		}
-
-	`;
-
-	const Span = styled.span`
-		cursor: pointer;
-
-		&:hover {
-			text-decoration: underline;
-		}
-	`;
-
 	let theForm;
 
-	if (window.location.pathname === "/shillelaghs-r-us/sign-in") {
+	if (window.location.pathname === "/shillelaghs-r-us/sign-in" || window.location.pathname === "/shillelaghs-r-us/sign-in/checkout") {
 		theForm = register ? <Register /> : <SignIn forgotClicked={() => forgot()} />
 	} else if (window.location.pathname === "/shillelaghs-r-us/sign-in/forgot") {
 		theForm = <Forgot username={username} />
@@ -65,7 +47,7 @@ const signInUp = (props) => {
 	}
 
 	return (
-		<article style={{ margin: '25vh 0 0 0' }}>
+		<Article>
 			<MDBContainer>
 				<br></br>
 				<MDBBreadcrumb light color="grey lighten-1">
@@ -76,7 +58,7 @@ const signInUp = (props) => {
 				<p className="float-right">Forgot <Span onClick={() => forgot(true)}> username </Span> / <Span onClick={() => forgot(false)}> password </Span></p>
 				<br></br>
 			</MDBContainer>
-		</article>
+		</Article>
 	);
 }
 

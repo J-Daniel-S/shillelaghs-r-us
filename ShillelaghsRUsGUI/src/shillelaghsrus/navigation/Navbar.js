@@ -34,7 +34,7 @@ const navbar = (props) => {
 	let theCustomer;
 
 	if (customer) {
-		theCustomer = "Welcome back " + customer.username + "!";
+		theCustomer = "Welcome back " + customer.firstName + "!";
 	}
 
 	const logout = () => {
