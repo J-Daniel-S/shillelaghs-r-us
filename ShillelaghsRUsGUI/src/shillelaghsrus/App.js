@@ -12,6 +12,8 @@ import History from './components/History';
 import ShillelaghContext from './context/ShillelaghContext';
 import Checkout from './components/checkout/Checkout';
 import ConfirmModal from './components/ConfirmModal';
+import InformationModal from './components/account/information/informationModal';
+import AddressModal from './components/account/information/addressModal';
 import './App.css';
 
 const app = (props) => {
@@ -21,8 +23,10 @@ const app = (props) => {
 	const [cartContents, setCartContents] = useState([]);
 	const [confirm, setConfirm] = useState(false);
 	const [order, setOrder] = useState(null);
-	const [ price, setPrice] = useState();
+	const [price, setPrice] = useState();
 	const [queryNeeded, setQueryNeeded] = useState(false);
+	const [info, setInfo] = useState(false);
+	const [addressModal, setAddressModal] = useState(false);
 
 	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice];
 
@@ -37,26 +41,28 @@ const app = (props) => {
 	}, [queryNeeded]);
 
 	const postOrder = () => {
-		let address;
+		let theAddress;
 		let theCustomer;
+		let theEmail;
 
 		if (!customer) {
 			theCustomer = -1;
+			theAddress = 'implement';
+			theEmail = '';
 		} else {
 			theCustomer = customer.id;
-		}
-
-		if (!customer) {
-			address = "set address";
-		} else {
-			address = customer.address;
+			theAddress = customer.address;
+			theEmail = customer.email;
 		}
 
 		const theOrder = {
 			contents: [...cartContents],
-			address: address,
-			totalPrice: price
+			address: theAddress,
+			totalPrice: price,
+			email: theEmail
 		};
+
+		console.log(theOrder)
 
 		setOrder(theOrder);
 
@@ -89,6 +95,108 @@ const app = (props) => {
 		setCartContents(arr);
 	}
 
+	const setInformation = () => {
+		if (info) {
+			setInfo(false);
+		} else {
+			setInfo(true);
+		}
+	}
+
+	const postInformation = (event) => {
+		const form = event.currentTarget;
+		event.preventDefault();
+
+		const fName = form.first.value;
+		const lName = form.last.value;
+		const email = form.email.value;
+
+
+		let theFirst = fName;
+		let theLast = lName;
+		let theEmail = email;
+
+		if (!fName) {
+			theFirst = customer.firstName;
+		}
+
+		if (!lName) {
+			theLast = customer.lastName;
+		}
+
+		if (!email) {
+			theEmail = customer.email;
+		}
+
+		if (!fName && !lName && !email) {
+			setInformation();
+		} else {
+
+			const theCustomer = customer;
+
+			theCustomer.firstName = theFirst;
+			theCustomer.lastName = theLast;
+			theCustomer.email = theEmail;
+
+			const headers = {
+				'Content-type': 'application/json',
+				'Access-Control-Allow-Origin': 'localhost:3000/',
+				'Access-Control-Allow-Methods': 'PUT',
+				'Accept': 'application/json, text/plain, */*',
+			}
+
+			axios.put('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id, theCustomer, { headers }).then(res => {
+				if (res.status === 202) {
+					setCustomer(res.data);
+				} else {
+					alert('Customer update failed!  Please contact us if the problem persists');
+				}
+			});
+
+			setInformation();
+		}
+	}
+
+	const setAddress = () => {
+		if (addressModal) {
+			setAddressModal(false);
+		} else {
+			setAddressModal(true);
+		}
+	}
+
+	const postAddress = (event) => {
+		const form = event.currentTarget;
+		event.preventDefault();
+
+		const address = form.address.value;
+
+		if (!address) {
+			setAddress();
+		} else {
+			const theCustomer = customer;
+
+			theCustomer.address = address;
+
+			const headers = {
+				'Content-type': 'application/json',
+				'Access-Control-Allow-Origin': 'localhost:3000/',
+				'Access-Control-Allow-Methods': 'PUT',
+				'Accept': 'application/json, text/plain, */*',
+			}
+
+			axios.put('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id, theCustomer, { headers }).then(res => {
+				if (res.status === 202) {
+					setCustomer(res.data);
+				} else {
+					alert('Customer update failed!  Please contact us if the problem persists');
+				}
+			});
+
+			setAddress();
+		}
+	}
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
@@ -99,11 +207,13 @@ const app = (props) => {
 
 					<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
 					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
-					<Route exact path="/shillelaghs-r-us/account" component={Account} />
+					<Route exact path="/shillelaghs-r-us/account" render={() => <Account updateInformation={setInformation} updateAddress={setAddress} />} />
 					<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
 					<Route exact path="/shillelaghs-r-us/history" component={History} />
 					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={() => checkoutClicked()} removeFromCart={removeFromCart} />} />
 					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
+					{info && <InformationModal close={setInformation} information={postInformation} info={info} />}
+					{addressModal && <AddressModal close={setAddress} address={postAddress} addressModal={addressModal} />}
 
 					<Footbar />
 				</BrowserRouter>

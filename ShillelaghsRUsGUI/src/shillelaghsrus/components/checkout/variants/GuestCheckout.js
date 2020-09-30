@@ -8,14 +8,17 @@ import { Clickable } from '../../styles/Styles';
 
 const guestCheckout = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents] = useContext(ShillelaghContext);
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, 
+			// eslint-disable-next-line
+		confirm, setConfirm, order, setOrder, price, setPrice ] = useContext(ShillelaghContext);
+	
 	const { history } = useReactRouter();
-	const [address, setAddress] = useState();
-	const [email, setEmail] = useState();
 	const [paymentNum, setPaymentNum] = useState();
 	const [paymentDate, setPaymentDate] = useState();
 	const [paymentConf, setPaymentConf] = useState();
 	const [active, setActive] = useState('');
+	const [email, setEmail] = useState();
+	const [address, setAddress] = useState();
 
 	useEffect(() => {
 		document.getElementById('email').focus();
@@ -23,6 +26,7 @@ const guestCheckout = (props) => {
 
 	const checkoutClicked = (event) => {
 		event.preventDefault();
+		event.stopPropogation();
 
 		if (active === '') {
 			alert('Please select a payment method');
@@ -84,7 +88,7 @@ const guestCheckout = (props) => {
 							Your address
 										</Form.Label>
 						<Form.Group>
-							<Form.Control required type="text" value={address} onChange={() => changed("address")} />
+							<Form.Control required type="text" id="address" value={address} onChange={() => changed("address")} />
 						</Form.Group>
 						<br></br>
 						<p><MDBIcon icon="file-invoice-dollar" /></p>

@@ -47,6 +47,7 @@ const footbar = (props) => {
 					<MDBCol size="6">
 						<h5 className="title">Hand crafted by our very own octogenarian Irishmen</h5>
 						<p>Check back daily to see new stock</p>
+						<p>Free shipping on three or more shillelaghs!</p>
 					</MDBCol>
 					<MDBCol size="6">
 						<h5 className="title">Links</h5>

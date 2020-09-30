@@ -40,7 +40,7 @@ const account = (props) => {
 			{!customer && <Redirect to="/shillelaghs-r-us/sign-in" />}
 			<MDBContainer>
 				<MDBJumbotron>
-					<p className="h4 display-4">{customer && customer.username}'s account</p>
+					<p className="h4 display-4">{customer && customer.firstName}'s account</p>
 				</MDBJumbotron>
 				<MDBCard>
 					<MDBCardHeader>
@@ -51,10 +51,11 @@ const account = (props) => {
 							<p>Username: {customer.username}</p>
 							<p>First name: {customer.firstName}</p>
 							<p>Last name: {customer.lastName}</p>
+							<p>Email: {customer.email}</p>
 						</section>}
 					</MDBCardBody>
 					<MDBCardFooter>
-						<Button variant="brown" className="float-right" onClick={() => alert("Information updated!")}>Update</Button>
+						<Button variant="brown" className="float-right" onClick={() => props.updateInformation()}>Update</Button>
 					</MDBCardFooter>
 				</MDBCard>
 				<br></br>
@@ -66,7 +67,7 @@ const account = (props) => {
 						<p>{customer && customer.address}</p>
 					</MDBCardBody>
 					<MDBCardFooter>
-						<Button variant="brown" className="float-right" onClick={() => alert("Address updated")}>Update address</Button>
+						<Button variant="brown" className="float-right" onClick={() => props.updateAddress()}>Update address</Button>
 					</MDBCardFooter>
 				</MDBCard>
 				<br></br>
