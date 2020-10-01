@@ -4,17 +4,33 @@ import { Redirect } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
 import ShillelaghContext from '../../context/ShillelaghContext';
-import { Article } from '../styles/Styles';
+import { Article, AButton } from '../styles/Styles';
 
 
 const account = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents] = useContext(ShillelaghContext);
 	const [orders, setOrders] = useState([]);
+	const [cards, setCards] = useState([]);
+	const [bankAccounts, setBankAccounts] = useState([]);
 
 	useEffect(() => {
 
 		if (customer) {
+
+			const theCards = [];
+			const theAccounts = [];
+
+			for (let method of customer.methods) {
+				if (method.type === 'CREDIT') {
+					theCards.push(method);
+				} else if (method.type === 'BANKACCOUNT') {
+					theAccounts.push(method);
+				}
+			}
+
+			setCards(theCards);
+			setBankAccounts(theAccounts);
 
 			fetch(
 				'http://localhost:8090/shillelaghs-r-us/orders/customer/' + customer.id,
@@ -34,6 +50,12 @@ const account = (props) => {
 		}
 
 	}, [customer])
+
+	const lastFour = (num) => {
+		let theNum = num.toString();
+		theNum = '****-' + theNum.substring(theNum.length-4, theNum.length);
+		return theNum;
+	}
 
 	return (
 		<Article>
@@ -87,20 +109,28 @@ const account = (props) => {
 						<p><MDBIcon far icon="credit-card" /> Credit Cards</p>
 						<MDBContainer>
 							<section>
-								<p><MDBIcon fab icon="cc-amex" /> American Express *****-5697</p>
+								{cards.length > 0 && cards.map((c, index) =>
+									(
+									<p key={index}>{c.card}    --    {lastFour(c.number)}
+									<span className="float-right">
+										<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => console.log('remove ' + c.id)}></AButton></span></p>
+								))}
 							</section>
 						</MDBContainer>
 						<br></br>
 						<p><MDBIcon icon="money-check-alt" /> Bank accounts</p>
 						<MDBContainer>
 							<section>
-								<span>Account number: ****-3497 </span> <span className="float-center">Bank: American Bank</span>
+								{bankAccounts.length >0 && bankAccounts.map((a, index) => (
+									<p key={index}>Account number: {lastFour(a.number)}    |    Routing number: {lastFour(a.routingNumber)}<span className="float-right">
+										<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => console.log('remove ' + a.id)}></AButton></span></p>
+								))}
 							</section>
 						</MDBContainer>
 						<br></br>
 					</MDBCardBody>
 					<MDBCardFooter>
-						<Button variant="brown" className="float-right" onClick={() => alert("Payment method added!")}>Add payment method</Button>
+						<Button variant="brown" className="float-right" onClick={() => props.addPaymentMethod()}>Add payment method</Button>
 					</MDBCardFooter>
 				</MDBCard>
 				<br></br>

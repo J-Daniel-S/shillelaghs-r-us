@@ -14,6 +14,7 @@ import Checkout from './components/checkout/Checkout';
 import ConfirmModal from './components/ConfirmModal';
 import InformationModal from './components/account/information/informationModal';
 import AddressModal from './components/account/information/addressModal';
+import PaymentModal from './components/account/information/paymentModal';
 import './App.css';
 
 const app = (props) => {
@@ -27,6 +28,8 @@ const app = (props) => {
 	const [queryNeeded, setQueryNeeded] = useState(false);
 	const [info, setInfo] = useState(false);
 	const [addressModal, setAddressModal] = useState(false);
+	const [paymentModal, setPaymentModal] = useState(false);
+	const [deleteConfirm, setDeleteConfirm] = useState(false);
 
 	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice];
 
@@ -41,25 +44,12 @@ const app = (props) => {
 	}, [queryNeeded]);
 
 	const postOrder = () => {
-		let theAddress;
-		let theCustomer;
-		let theEmail;
-
-		if (!customer) {
-			theCustomer = -1;
-			theAddress = 'implement';
-			theEmail = '';
-		} else {
-			theCustomer = customer.id;
-			theAddress = customer.address;
-			theEmail = customer.email;
-		}
 
 		const theOrder = {
 			contents: [...cartContents],
-			address: theAddress,
+			address: customer.address,
 			totalPrice: price,
-			email: theEmail
+			email: customer.email
 		};
 
 		console.log(theOrder)
@@ -73,7 +63,7 @@ const app = (props) => {
 			'Accept': 'application/json, text/plain, */*',
 		}
 
-		axios.post('http://localhost:8090/shillelaghs-r-us/orders/' + theCustomer, theOrder, { headers })
+		axios.post('http://localhost:8090/shillelaghs-r-us/orders/' + customer.id, theOrder, { headers })
 			.then(res => {
 				if (res.status === 201) {
 					alert('order placed!');
@@ -197,6 +187,74 @@ const app = (props) => {
 		}
 	}
 
+	const addPaymentMethod = () => {
+		if (paymentModal) {
+			setPaymentModal(false);
+		} else {
+			setPaymentModal(true);
+		}
+	}
+
+	const postPaymentMethod = (event) => {
+		event.preventDefault();
+
+		const form = event.currentTarget;
+		addPaymentMethod();
+
+		const number = form.number.value;
+		let body;
+		let card;
+
+		if (form.cardSelect) {
+
+			if (form.cardSelect.value === 'American express') {
+				card = 'AMERICANEXPRESS'
+			}
+
+			body = {
+				type: 'CREDIT',
+				card: card.toUpperCase(),
+				number: number,
+				confirmationNumber: form.confirmation.value,
+				expirationDate: form.expiry.value
+			}
+
+		} else {
+			body = {
+				type: 'BANKACCOUNT',
+				number: number,
+				routingNumber: form.routing.value
+			}
+		}
+
+		const headers = {
+			'Content-type': 'application/json',
+			'Access-Control-Allow-Origin': 'localhost:3000/',
+			'Access-Control-Allow-Methods': 'POST',
+			'Accept': 'application/json, text/plain, */*',
+		}
+
+		axios.post('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id, body, { headers }).then(res => {
+			if (res.status === 202) {
+				setCustomer(res.data);
+			} else {
+				alert('Payment method not added!  Please contact us if the problem persists');
+			}
+		});
+	}
+
+	const toggleDelete = () => {
+		if (deleteConfirm) {
+			setDeleteConfirm(false);
+		} else {
+			setDeleteConfirm(true);
+		}
+	}
+
+	const deletePaymentMethod = (id) => {
+
+	}
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
@@ -207,13 +265,21 @@ const app = (props) => {
 
 					<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
 					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
-					<Route exact path="/shillelaghs-r-us/account" render={() => <Account updateInformation={setInformation} updateAddress={setAddress} />} />
+					<Route exact path="/shillelaghs-r-us/account" render={() =>
+						<Account 
+							updateInformation={setInformation} 
+							updateAddress={setAddress} 
+							addPaymentMethod={addPaymentMethod} 
+							deletePaymentMethod={deletePaymentMethod} 
+							toggleDelete={toggleDelete} />}
+					/>
 					<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
 					<Route exact path="/shillelaghs-r-us/history" component={History} />
-					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={() => checkoutClicked()} removeFromCart={removeFromCart} />} />
+					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={checkoutClicked} removeFromCart={removeFromCart} />} />
 					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
 					{info && <InformationModal close={setInformation} information={postInformation} info={info} />}
 					{addressModal && <AddressModal close={setAddress} address={postAddress} addressModal={addressModal} />}
+					{paymentModal && <PaymentModal close={addPaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
 
 					<Footbar />
 				</BrowserRouter>

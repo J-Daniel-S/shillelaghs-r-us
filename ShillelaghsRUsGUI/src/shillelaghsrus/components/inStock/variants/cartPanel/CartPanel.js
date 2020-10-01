@@ -20,7 +20,6 @@ const cartPanel = (props) => {
 	} else {
 		Buttons = (
 			<React.Fragment>
-				<Button variant="dark-green" className="float-right" onClick={() => checkout()}>Checkout as guest</Button>
 				<Button variant="grey" className="float-right" onClick={() => signIn()}>Sign in</Button>
 			</React.Fragment>
 		);

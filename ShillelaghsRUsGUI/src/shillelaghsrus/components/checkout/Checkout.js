@@ -3,7 +3,6 @@ import { MDBContainer, MDBCardHeader, MDBCardBody, MDBCardFooter, MDBCard, MDBNa
 import { Redirect } from 'react-router-dom';
 
 import ShillelaghContext from '../../context/ShillelaghContext';
-import GuestCheckout from './variants/GuestCheckout';
 import CustomerCheckout from './variants/CustomerCheckout';
 import { AButton, Info, Article } from '../styles/Styles';
 
@@ -77,7 +76,7 @@ const checkout = (props) => {
 							</MDBCol>
 						</MDBRow>
 						<hr></hr>
-						{!customer && <GuestCheckout checkoutClicked={props.checkoutClicked} />}
+						{!customer && <Redirect to="/shillelaghs-r-us/sign-in" />}
 						{customer && <CustomerCheckout checkoutClicked={props.checkoutClicked} />}
 					</MDBCardBody>
 					<MDBCardFooter>
