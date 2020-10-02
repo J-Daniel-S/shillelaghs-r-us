@@ -47,8 +47,16 @@ public class CustomerController {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<Long> getIdByName(@PathVariable String name) {
-		return ResponseEntity.status(HttpStatus.FOUND).body(cusRepo.findIdByName(name));
+	public ResponseEntity<Customer> getIdByName(@PathVariable String name) {
+		if (cusRepo.exists(name)) {
+			Customer customer = cusRepo.findByName(name.toLowerCase());
+			return ResponseEntity.status(HttpStatus.FOUND).body(customer);
+		} else {
+			Customer customer = new Customer();
+			customer.setId(-2);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(customer);
+		}
+
 	}
 
 	@GetMapping("/{id}/orders")

@@ -57,13 +57,19 @@ public class OrderController {
 		return ResponseEntity.status(HttpStatus.OK).body(oRepo.findAll());
 	}
 
+	@GetMapping("/customer/{id}")
+	public ResponseEntity<List<Order>> getOrders(@PathVariable("id") long customerId) {
+		if (cusRepo.exists(customerId)) {
+			List<Order> orders = oRepo.findByCustomer(customerId);
+			return ResponseEntity.status(HttpStatus.FOUND).body(orders);
+		} else {
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		}
+	}
+
 	@PostMapping("/{id}")
 	public ResponseEntity<Customer> placeOrder(@RequestBody Order order, @PathVariable("id") long customerId) {
-		if (customerId == -1) {
-			order.setCustomer(null);
-		} else {
-			order.setCustomer(cusRepo.findById(customerId));
-		}
+		order.setCustomer(cusRepo.findById(customerId));
 		order.setOrderDate(LocalDateTime.now());
 		if (order.getAddress() == null) {
 			order.setAddress(cusRepo.findById(customerId).getAddress());

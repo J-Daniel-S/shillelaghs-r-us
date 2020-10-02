@@ -28,8 +28,8 @@ public class CustomerService {
 		}
 	}
 
-	public Long findIdByName(String name) {
-		return cusRepo.findIdByName(name);
+	public Customer findByName(String name) {
+		return cusRepo.findByName(name);
 	}
 
 	public Iterable<Customer> findAllById(List<Long> ids) {
@@ -38,6 +38,14 @@ public class CustomerService {
 
 	public boolean exists(long id) {
 		return cusRepo.existsById(id);
+	}
+
+	public boolean exists(String username) {
+		if (cusRepo.findByName(username) != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public boolean save(Customer customer) {
@@ -64,7 +72,6 @@ public class CustomerService {
 
 	public boolean update(Customer customer, long id) throws UpdateFailedException, NoSuchCustomerException {
 		if (cusRepo.existsById(id)) {
-			cusRepo.deleteById(id);
 			cusRepo.save(customer);
 			if (cusRepo.existsById(id)) {
 				return true;

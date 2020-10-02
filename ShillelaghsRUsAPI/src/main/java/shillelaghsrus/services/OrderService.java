@@ -48,4 +48,8 @@ public class OrderService {
 		this.oRepo = oRepo;
 	}
 
+	public List<Order> findByCustomer(long customerId) {
+		return oRepo.findByCustomerId(customerId);
+	}
+
 }

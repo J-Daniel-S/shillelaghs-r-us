@@ -30,11 +30,15 @@ public class Order {
 	private LocalDateTime orderDate;
 	@Column(nullable = false)
 	private String address;
+	@Column(nullable = false)
+	private String email;
 	@Column
 	private boolean shipped;
 	@OneToMany(targetEntity = Shillelagh.class, fetch = FetchType.LAZY, mappedBy = "order")
 	@Column(nullable = false)
 	private List<Shillelagh> contents;
+	@Column(nullable = false, name = "total_price")
+	private double totalPrice;
 	@ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "customer_id", nullable = true)
 	@JsonIgnore
@@ -59,6 +63,30 @@ public class Order {
 		super();
 		this.contents = new ArrayList<Shillelagh>();
 		this.shipped = false;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public boolean isShipped() {
+		return shipped;
+	}
+
+	public void setShipped(boolean shipped) {
+		this.shipped = shipped;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 
 	public List<Shillelagh> getContents() {

@@ -14,7 +14,10 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 	@Override
 	public List<Customer> findAll();
 
-	@Query(nativeQuery = true, value = "SELECT customer_id FROM customers WHERE first_name = ?1")
+	@Query(nativeQuery = true, value = "SELECT customer_id FROM customers WHERE username = ?1")
 	public Long findIdByName(String name);
+
+	@Query(nativeQuery = true, value = "SELECT * FROM customers WHERE username = ?1")
+	public Customer findByName(String name);
 
 }

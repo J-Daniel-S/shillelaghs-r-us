@@ -23,5 +23,9 @@ INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (2
 INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (23, 'Samwise', false, false, 30.00);
 INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (24, 'Jeff', false, false, 30.00);
 
-INSERT INTO customers (customer_id, username, first_name, last_name, address) VALUES (1, 'morty88theCleansed', 'morton', 'higsby', '9999 Placeyplace Dr Kevinson, KY 24468');
-INSERT INTO customers (customer_id, username, first_name, last_name, address) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417');
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email) VALUES (1, 'morty88theCleansed', 'morton', 'higsby', '9999 Placeyplace Dr Kevinson, KY 24468', 'Yorspur@yorspur.com');
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417', 'Therspen@therspen.com');
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email) VALUES (3, 'spurson', 'Spurtersly', 'Elconsomin', '51903 Phoinon Ct Jefferson, JF 27844', 'spurson@murson.com');
+
+INSERT INTO methods (method_id, payment_type, card_type, customer_id, number, routing_number, confirmation_number, expiration_date) VALUES (1, 0, 1, 3, 1677546223856798, null, 469, TO_DATE('2024-12-01', 'YYYY-MM-DD'));
+INSERT INTO methods (method_id, payment_type, card_type, customer_id, number, routing_number, confirmation_number, expiration_date) VALUES (2, 1, null, 3, 138549762554, 136985662247, null, null);

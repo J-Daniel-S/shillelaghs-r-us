@@ -15,6 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "customers")
@@ -25,7 +26,7 @@ public class Customer {
 	@SequenceGenerator(name = "customer_id", allocationSize = 1)
 	@Column(name = "customer_id")
 	private long id;
-	@Column
+	@Column(nullable = false)
 	private String username;
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
@@ -33,9 +34,14 @@ public class Customer {
 	private String lastName;
 	@Column(nullable = false)
 	private String address;
+	@Column(nullable = false)
+	private String email;
 	@OneToMany(targetEntity = Order.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customer")
 	@JsonIgnore
 	private List<Order> orders;
+	@OneToMany(targetEntity = Method.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customer")
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+	private List<Method> methods;
 
 	public Customer(String firstName, String lastName, String address) {
 		super();
@@ -43,16 +49,34 @@ public class Customer {
 		this.lastName = lastName;
 		this.address = address;
 		this.orders = new ArrayList<Order>();
+		this.methods = new ArrayList<Method>();
 	}
 
 	public Customer() {
 		super();
 		this.orders = new ArrayList<Order>();
+		this.methods = new ArrayList<Method>();
+	}
+
+	public List<Method> getMethods() {
+		return methods;
+	}
+
+	public void setMethods(List<Method> methods) {
+		this.methods = methods;
 	}
 
 	// for testing
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getUsername() {
@@ -101,8 +125,8 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", address=" + address
-				+ ", orders=" + orders + "]";
+		return "Customer [id=" + id + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", address=" + address + ", orders=" + orders + "]";
 	}
 
 }
