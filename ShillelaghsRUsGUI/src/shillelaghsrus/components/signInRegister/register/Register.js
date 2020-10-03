@@ -65,7 +65,7 @@ const register = (props) => {
 			alert("The passwords provided don't match");
 			setCPassword("");
 			setPassword("");
-		}
+		} else {
 
 		const customer = {
 			username: uName,
@@ -84,16 +84,16 @@ const register = (props) => {
 
 		axios.post("http://localhost:8090/shillelaghs-r-us/customers", customer, { headers })
 			.then(res => {
-				// if (res.status === ) {
-
-				// } else if (res.status === ) {
-
-				// }
-				setCustomer(res.data);
+				if (res.status === 201) {
+					setCustomer(res.data);
 				history.push("/shillelaghs-r-us/home");
+				} else  {
+					alert("There was a problem creating your account.  If the problem persists please contact us");
+				}
+				
 			}
 			);
-
+		}
 	}
 
 	return (

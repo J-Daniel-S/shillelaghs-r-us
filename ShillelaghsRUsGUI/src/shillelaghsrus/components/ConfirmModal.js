@@ -14,7 +14,7 @@ const confirmModal = (props) => {
 		setConfirm(false);
 		setCartOpen(false);
 		props.order();
-		history.push('/shillelaghs-r-us/home');
+		setTimeout(() => history.push('/shillelaghs-r-us/account'), 1000);
 	}
 
 	return (

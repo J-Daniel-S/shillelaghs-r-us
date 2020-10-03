@@ -1,34 +1,34 @@
 import React, { useContext, useState } from 'react';
 import { MDBCol, MDBRow, MDBIcon } from 'mdbreact';
 import { Button, Form } from 'react-bootstrap';
-import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../../../context/ShillelaghContext';
 import { Clickable } from '../../styles/Styles';
 
 const customerCheckout = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents] = useContext(ShillelaghContext);
-	const { history } = useReactRouter();
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, 
+			// eslint-disable-next-line
+		setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, theAddress, setTheAddress] = useContext(ShillelaghContext);
 	const [address, setAddress] = useState();
-	const [paymentNum, setPaymentNum] = useState('');
-	const [paymentDate, setPaymentDate] = useState('');
-	const [paymentConf, setPaymentConf] = useState('');
+	const [paymentNum, setPaymentNum] = useState();
+	const [paymentDate, setPaymentDate] = useState();
+	const [paymentConf, setPaymentConf] = useState();
 	const [active, setActive] = useState('');
 	const [customAddress, setCustomAddress] = useState(false);
 
 	const checkoutClicked = (event) => {
 		event.preventDefault();
 
-		if (active === '') {
+		if (customAddress) {
+			setTheAddress(event.currentTarget.customAddress.value);
+		}
+
+		if (!paymentMethod) {
 			alert('Please select a payment method');
 		} else {
 			props.checkoutClicked();
 		}
-	}
-
-	const login = () => {
-		history.push("/shillelaghs-r-us/sign-in");
 	}
 
 	const changed = input => event => {
@@ -88,6 +88,30 @@ const customerCheckout = (props) => {
 		}
 	}
 
+	const lastFour = (num) => {
+		let theNum = num.toString();
+		theNum = '****-' + theNum.substring(theNum.length - 4, theNum.length);
+		return theNum;
+	}
+
+	const customerMethods = customer.methods.map((m, index) => m.card ?
+			<p key={index}><Button size="sm" variant="grey" onClick={() => {
+						setPaymentMethod(m);
+					}}>Select</Button>{m.card}    --    {lastFour(m.number)}</p>
+		:
+			<p key={index}><Button size="sm" variant="grey" onClick={() => {
+						setPaymentMethod(m);
+					}}>Select</Button>Account number: {lastFour(m.number)}</p>
+		
+
+	);
+
+	let method;
+	
+	if (paymentMethod) {
+		method = paymentMethod.card ? <p>Payment method: {paymentMethod.card}    --    {lastFour(paymentMethod.number)}</p> : <p>Payment method: Account number   --   {lastFour(paymentMethod.number)}</p>;
+	}
+
 	return (
 		<React.Fragment>
 			<MDBRow>
@@ -102,36 +126,37 @@ const customerCheckout = (props) => {
 						{customAddress &&
 							<React.Fragment>
 								<Form.Label>
-									Your address
+									Ship to
 										</Form.Label>
-								<Form.Group>
+								<Form.Group controlId="customAddress">
 									<Form.Control required type="text" value={address} onChange={() => changed("address")} />
 								</Form.Group>
 								<br></br>
 							</React.Fragment>}
 						<p><MDBIcon icon="file-invoice-dollar" /></p>
-						<p><Button size="sm" variant="grey" onClick={() => {
-							setActive('customer')
-						}}>Use preferred payment method</Button></p>
-						{active === "customer" && <p>customer payment method placeholder</p>}
-						<Form.Label>
+						{!paymentMethod && customerMethods}
+						{paymentMethod && method}
+						{!paymentMethod && <Form.Label>
 							<span>Alternate payment method  </span>{'   '}
 							<Clickable onClick={() => setActive('card')}><MDBIcon far icon="credit-card" /></Clickable>{'  '}
 							<Clickable onClick={() => setActive('paypal')}><MDBIcon fab icon="paypal" /></Clickable>{'  '}
 							<Clickable onClick={() => setActive('amazon')}><MDBIcon fab icon="amazon-pay" /></Clickable>{'  '}
 							<span>: {active}</span>
 							<hr></hr>
-						</Form.Label>
-						{active === "card" && (
+						</Form.Label>}
+						{active === "card" && !paymentMethod && (
 							<React.Fragment>
 								<Form.Group>
-									<Form.Control required type="text" value={paymentNum} onChange={() => changed("paymentNum")} />
+									<Form.Label>Card number</Form.Label>
+									<Form.Control required type="number" value={paymentNum} onChange={() => changed("paymentNum")} />
 								</Form.Group>
 								<Form.Group>
-									<Form.Control required type="text" value={paymentDate} onChange={() => changed("paymentDate")} />
+									<Form.Label>Expiration date</Form.Label>
+									<Form.Control required type="date" value={paymentDate} onChange={() => changed("paymentDate")} />
 								</Form.Group>
 								<Form.Group>
-									<Form.Control required type="text" value={paymentConf} onChange={() => changed("paymentConf")} />
+									<Form.Label>Confirmation number</Form.Label>
+									<Form.Control required type="number" max="9999" value={paymentConf} onChange={() => changed("paymentConf")} />
 								</Form.Group>
 							</React.Fragment>)}
 						{active !== "card" && active !== "" && active !== "customer" && <p><Button variant="brown" onClick={() => {
@@ -141,7 +166,6 @@ const customerCheckout = (props) => {
 						}>Log in to {icon}</Button></p>}
 						<br></br>
 						<section>
-							{!customer && <Button variant="grey" onClick={() => login()}>Sign in</Button>}
 							<Button variant="brown" type="submit" >Checkout</Button>
 						</section>
 					</Form>

@@ -15,6 +15,7 @@ import ConfirmModal from './components/ConfirmModal';
 import InformationModal from './components/account/information/informationModal';
 import AddressModal from './components/account/information/addressModal';
 import PaymentModal from './components/account/information/paymentModal';
+import DeleteModal from './components/deleteModal';
 import './App.css';
 
 const app = (props) => {
@@ -30,8 +31,11 @@ const app = (props) => {
 	const [addressModal, setAddressModal] = useState(false);
 	const [paymentModal, setPaymentModal] = useState(false);
 	const [deleteConfirm, setDeleteConfirm] = useState(false);
+	const [paymentMethod, setPaymentMethod] = useState(null);
+	const [address, setAddress] = useState(null);
 
-	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice];
+	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, 
+		cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress];
 
 	useEffect(() => {
 		axios.get('http://localhost:8090/shillelaghs-r-us/shillelaghs/').then(res => {
@@ -45,9 +49,17 @@ const app = (props) => {
 
 	const postOrder = () => {
 
+		let theAddress;
+
+		if (address) {
+			theAddress = address;
+		} else {
+			theAddress = customer.address;
+		}
+
 		const theOrder = {
 			contents: [...cartContents],
-			address: customer.address,
+			address: theAddress,
 			totalPrice: price,
 			email: customer.email
 		};
@@ -69,6 +81,7 @@ const app = (props) => {
 					alert('order placed!');
 					setOrder(null);
 					setCartContents([]);
+					setAddress(null)
 				} else {
 					alert('There was a problem.  If the problem persists please contact us');
 				}
@@ -147,7 +160,7 @@ const app = (props) => {
 		}
 	}
 
-	const setAddress = () => {
+	const toggleAddress = () => {
 		if (addressModal) {
 			setAddressModal(false);
 		} else {
@@ -162,7 +175,7 @@ const app = (props) => {
 		const address = form.address.value;
 
 		if (!address) {
-			setAddress();
+			toggleAddress();
 		} else {
 			const theCustomer = customer;
 
@@ -183,11 +196,11 @@ const app = (props) => {
 				}
 			});
 
-			setAddress();
+			toggleAddress();
 		}
 	}
 
-	const addPaymentMethod = () => {
+	const togglePaymentMethod = () => {
 		if (paymentModal) {
 			setPaymentModal(false);
 		} else {
@@ -199,7 +212,7 @@ const app = (props) => {
 		event.preventDefault();
 
 		const form = event.currentTarget;
-		addPaymentMethod();
+		togglePaymentMethod();
 
 		const number = form.number.value;
 		let body;
@@ -209,6 +222,8 @@ const app = (props) => {
 
 			if (form.cardSelect.value === 'American express') {
 				card = 'AMERICANEXPRESS'
+			} else {
+				card = form.cardSelect.value;
 			}
 
 			body = {
@@ -251,8 +266,16 @@ const app = (props) => {
 		}
 	}
 
-	const deletePaymentMethod = (id) => {
+	const deletePaymentMethod = () => {
+		toggleDelete();
 
+		axios.delete('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id + '/' + paymentMethod.id).then(res => {
+			if (res.status === 202) {
+				setCustomer(res.data);
+			} else {
+				alert('Payment method not deleted!  Please contact us if the problem persists');
+			}
+		})
 	}
 
 	return (
@@ -268,8 +291,8 @@ const app = (props) => {
 					<Route exact path="/shillelaghs-r-us/account" render={() =>
 						<Account 
 							updateInformation={setInformation} 
-							updateAddress={setAddress} 
-							addPaymentMethod={addPaymentMethod} 
+							updateAddress={toggleAddress} 
+							addPaymentMethod={togglePaymentMethod} 
 							deletePaymentMethod={deletePaymentMethod} 
 							toggleDelete={toggleDelete} />}
 					/>
@@ -278,8 +301,10 @@ const app = (props) => {
 					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={checkoutClicked} removeFromCart={removeFromCart} />} />
 					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
 					{info && <InformationModal close={setInformation} information={postInformation} info={info} />}
-					{addressModal && <AddressModal close={setAddress} address={postAddress} addressModal={addressModal} />}
-					{paymentModal && <PaymentModal close={addPaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
+					{addressModal && <AddressModal close={toggleAddress} address={postAddress} addressModal={addressModal} />}
+					{paymentModal && <PaymentModal close={togglePaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
+					{deleteConfirm && <DeleteModal close={toggleDelete} delete={deletePaymentMethod} />}
+
 
 					<Footbar />
 				</BrowserRouter>

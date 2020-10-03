@@ -29,7 +29,7 @@ const contact = (props) => {
 									<MDBInput type="textarea" rows="2" label="Your message" />
 								</section>
 								<section className="text-center">
-									<Button outline variant="brown">
+									<Button variant="brown">
 										Send
            								 <MDBIcon far icon="paper-plane" className="ml-1" />
 									</Button>

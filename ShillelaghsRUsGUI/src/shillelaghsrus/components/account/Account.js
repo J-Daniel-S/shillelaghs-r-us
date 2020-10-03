@@ -9,7 +9,9 @@ import { Article, AButton } from '../styles/Styles';
 
 const account = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents] = useContext(ShillelaghContext);
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
+		// eslint-disable-next-line
+		confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod] = useContext(ShillelaghContext);
 	const [orders, setOrders] = useState([]);
 	const [cards, setCards] = useState([]);
 	const [bankAccounts, setBankAccounts] = useState([]);
@@ -49,11 +51,11 @@ const account = (props) => {
 			});
 		}
 
-	}, [customer])
+	}, [customer, paymentMethod])
 
 	const lastFour = (num) => {
 		let theNum = num.toString();
-		theNum = '****-' + theNum.substring(theNum.length-4, theNum.length);
+		theNum = '****-' + theNum.substring(theNum.length - 4, theNum.length);
 		return theNum;
 	}
 
@@ -104,26 +106,33 @@ const account = (props) => {
 						<MDBIcon fab icon="cc-discover" />{'  '}
 						<MDBIcon fab icon="cc-visa" />{'  '}
 						<MDBIcon fab icon="cc-mastercard" />
+						<span> accepted</span>
 						<br></br>
 						<br></br>
-						<p><MDBIcon far icon="credit-card" /> Credit Cards</p>
+						{cards.length > 0 && <p><MDBIcon far icon="credit-card" /> Credit Cards</p>}
 						<MDBContainer>
 							<section>
 								{cards.length > 0 && cards.map((c, index) =>
 									(
-									<p key={index}>{c.card}    --    {lastFour(c.number)}
-									<span className="float-right">
-										<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => console.log('remove ' + c.id)}></AButton></span></p>
-								))}
+										<p key={index}>{c.card}    --    {lastFour(c.number)}
+											<span className="float-right">
+												<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => {
+													setPaymentMethod(c);
+													props.toggleDelete();
+												}}></AButton></span></p>
+									))}
 							</section>
 						</MDBContainer>
 						<br></br>
-						<p><MDBIcon icon="money-check-alt" /> Bank accounts</p>
+						{bankAccounts.length > 0 && <p><MDBIcon icon="money-check-alt" /> Bank accounts</p>}
 						<MDBContainer>
 							<section>
-								{bankAccounts.length >0 && bankAccounts.map((a, index) => (
+								{bankAccounts.length > 0 && bankAccounts.map((a, index) => (
 									<p key={index}>Account number: {lastFour(a.number)}    |    Routing number: {lastFour(a.routingNumber)}<span className="float-right">
-										<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => console.log('remove ' + a.id)}></AButton></span></p>
+										<AButton className="fa fa-times fa-lg" aria-hidden="true" onClick={() => {
+											setPaymentMethod(a);
+											props.toggleDelete();
+										}}></AButton></span></p>
 								))}
 							</section>
 						</MDBContainer>
@@ -160,7 +169,7 @@ const account = (props) => {
 								</MDBRow>
 								<MDBRow>
 									<MDBCol>
-										Payment method: add payment method
+										Shipped: {o.shipped ? 'Yes': 'Not yet'}
 									</MDBCol>
 								</MDBRow>
 								<hr></hr>

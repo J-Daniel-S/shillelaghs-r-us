@@ -27,7 +27,9 @@ const inStock = (props) => {
 	const addToCart = (s) => {
 		const arr = [...cartContents];
 
-		arr.push(s);
+		if (!cartContents.includes(s)) {
+			arr.push(s);
+		}
 
 		setCartContents(arr);
 	}
