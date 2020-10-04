@@ -43,6 +43,12 @@ public class OrderService {
 		oRepo.saveAll(orders);
 	}
 
+	public void ship(long orderId) {
+		Order order = oRepo.findById(orderId).get();
+		order.setShipped(true);
+		oRepo.save(order);
+	}
+
 	// test
 	public OrderService(OrderRepository oRepo) {
 		this.oRepo = oRepo;

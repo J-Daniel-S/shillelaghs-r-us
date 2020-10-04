@@ -50,7 +50,11 @@ public class CustomerController {
 	public ResponseEntity<Customer> getIdByName(@PathVariable String name) {
 		if (cusRepo.exists(name)) {
 			Customer customer = cusRepo.findByName(name.toLowerCase());
-			return ResponseEntity.status(HttpStatus.FOUND).body(customer);
+			if (customer.isAdmin()) {
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body(customer);
+			} else {
+				return ResponseEntity.status(HttpStatus.FOUND).body(customer);
+			}
 		} else {
 			Customer customer = new Customer();
 			customer.setId(-2);

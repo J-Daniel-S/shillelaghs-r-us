@@ -37,10 +37,6 @@ const navbar = (props) => {
 		theCustomer = "Welcome back " + customer.firstName + "!";
 	}
 
-	const logout = () => {
-		setCustomer(null);
-	}
-
 	return (
 		<MDBNavbar color="light-green darken-4" expand="lg" className="white-text">
 			<MDBNavbarBrand>
@@ -55,7 +51,7 @@ const navbar = (props) => {
 						</Span>}
 				</MDBNavItem>
 			<MDBNavItem>
-				{customer && <Span onClick={() => logout()} >Logout</Span>}
+				{customer && <Span onClick={() => setCustomer(null)} >Logout</Span>}
 				{!customer && <Span onClick={() => signIn()}>Sign in / register</Span>}
 			</MDBNavItem>
 			</MDBNavbarNav>

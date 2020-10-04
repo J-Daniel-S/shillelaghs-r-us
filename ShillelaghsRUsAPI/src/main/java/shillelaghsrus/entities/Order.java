@@ -131,7 +131,9 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", address=" + address + "]";
+		return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", address=" + address + ", email=" + email
+				+ ", shipped=" + shipped + ", contents=" + contents + ", totalPrice=" + totalPrice + ", customer="
+				+ customer + "]";
 	}
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,16 @@ public class ShillelaghController {
 			return ResponseEntity.ok(shiRepo.findById(id));
 		} else {
 			throw new NoSuchShillelaghException("Shillelagh does not exist: " + id);
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<List<Shillelagh>> deleteShillelagh(@PathVariable long id) {
+		if (shiRepo.exists(id)) {
+			shiRepo.deleteById(id);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body(shiRepo.findAll());
+		} else {
+			throw new NoSuchShillelaghException("Shillelagh does not exist: id-" + id);
 		}
 	}
 

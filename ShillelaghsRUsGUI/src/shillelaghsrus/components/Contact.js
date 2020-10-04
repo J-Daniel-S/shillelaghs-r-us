@@ -1,10 +1,18 @@
 import React from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBInput, MDBCard, MDBCardHeader, MDBCardBody } from 'mdbreact';
 import { Button } from 'react-bootstrap';
+import useReactRouter from 'use-react-router';
 
 import { Article } from './styles/Styles';
 
 const contact = (props) => {
+	const { history } = useReactRouter();
+
+	const sent = () => {
+		alert('Message sent!');
+		history.push('/shillelaghs-r-us/home');
+	}
+
 	return (
 		<Article>
 			<MDBContainer>
@@ -29,7 +37,7 @@ const contact = (props) => {
 									<MDBInput type="textarea" rows="2" label="Your message" />
 								</section>
 								<section className="text-center">
-									<Button variant="brown">
+									<Button variant="brown" onClick={() => sent()}>
 										Send
            								 <MDBIcon far icon="paper-plane" className="ml-1" />
 									</Button>

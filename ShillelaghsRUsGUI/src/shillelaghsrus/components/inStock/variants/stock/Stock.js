@@ -18,8 +18,7 @@ const stock = (props) => {
 						</MDBRow>
 					</MDBCardHeader>
 					<MDBCardBody>
-						<p>Picture of the shillelagh</p>
-						{/* <img src='../../../../resources/shillelaghpic.jpg' alt='shillelagh pic' /> */}
+						Unique shillelagh picture
 					</MDBCardBody>
 					<MDBCardFooter>
 						<MDBRow>

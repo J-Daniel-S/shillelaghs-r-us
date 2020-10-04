@@ -45,3 +45,10 @@ export const Span = styled.span`
 		text-decoration: underline;
 	}
 `;
+
+export const ProductPicture = styled.section`
+	height: inherit;
+	width: inherit;
+	margin: 0;
+	padding: 0;
+`;

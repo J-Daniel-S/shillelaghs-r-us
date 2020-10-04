@@ -7,7 +7,9 @@ import ShillelaghContext from '../../../context/ShillelaghContext';
 
 const signIn = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer] = useContext(ShillelaghContext);
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice,
+		// eslint-disable-next-line
+		 deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin] = useContext(ShillelaghContext);
 	const [username, setUsername] = useState();
 	const [password, setPassword] = useState();
 	const { history } = useReactRouter();
@@ -49,6 +51,11 @@ const signIn = (props) => {
 					} else if (window.location.pathname === "/shillelaghs-r-us/sign-in/checkout") {
 						history.push("/shillelaghs-r-us/checkout");
 					}
+				})
+			} else if (res.status === 202) {
+				res.json().then(res => {
+					setAdmin(res);
+					history.push('/admin');
 				})
 			} else {
 				setUsername('');

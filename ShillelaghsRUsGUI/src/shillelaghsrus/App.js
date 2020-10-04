@@ -3,12 +3,16 @@ import axios from 'axios';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 import Header from './header/Header';
+import AdminNavbar from './navigation/AdminNavbar';
 import Footbar from './navigation/Footbar';
 import InStock from './components/inStock/InStock';
 import SignInUp from './components/signInRegister/signInUp';
 import Account from './components/account/Account';
 import Contact from './components/Contact';
 import History from './components/History';
+import CustomerPage from './components/admin/CustomerPage';
+import AdminStock from './components/admin/adminStock';
+import AdminCustomers from './components/admin/AdminCustomers';
 import ShillelaghContext from './context/ShillelaghContext';
 import Checkout from './components/checkout/Checkout';
 import ConfirmModal from './components/ConfirmModal';
@@ -33,9 +37,10 @@ const app = (props) => {
 	const [deleteConfirm, setDeleteConfirm] = useState(false);
 	const [paymentMethod, setPaymentMethod] = useState(null);
 	const [address, setAddress] = useState(null);
+	const [admin, setAdmin] = useState(null);
 
-	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, 
-		cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress];
+	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
+		 confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin];
 
 	useEffect(() => {
 		axios.get('http://localhost:8090/shillelaghs-r-us/shillelaghs/').then(res => {
@@ -63,8 +68,6 @@ const app = (props) => {
 			totalPrice: price,
 			email: customer.email
 		};
-
-		console.log(theOrder)
 
 		setOrder(theOrder);
 
@@ -278,35 +281,96 @@ const app = (props) => {
 		})
 	}
 
+	const ship = (o) => {
+
+		const headers = {
+			'Content-type': 'application/json',
+			'Access-Control-Allow-Origin': 'localhost:3000/',
+			'Access-Control-Allow-Methods': 'PUT',
+			'Accept': 'application/json, text/plain, */*'
+		}
+
+		fetch(
+			'http://localhost:8090/shillelaghs-r-us/orders/' + customer.id + '/' + o.orderId,
+			{
+				method: 'PUT',
+				headers: headers
+			}
+		).then(res => {
+			if (res.status === 302) {
+				res.json().then(res => setCustomer(res));
+			} else {
+				alert('Shipping failed');
+			}
+		})
+
+	}
+
+	const deleteOrder = (o) => {
+		const headers = {
+			'Content-type': 'application/json',
+			'Access-Control-Allow-Origin': 'localhost:3000/',
+			'Access-Control-Allow-Methods': 'PUT',
+			'Accept': 'application/json, text/plain, */*'
+		}
+
+		fetch(
+			'http://localhost:8090/shillelaghs-r-us/orders/' + customer.id + '/' + o.orderId,
+			{
+				method: 'DELETE',
+				headers: headers
+			}
+		).then(res => {
+			if (res.status === 202) {
+				res.json().then(res => setCustomer(res));
+			} else {
+				alert('Delete order failed');
+			}
+		})
+	}
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
 				<BrowserRouter>
-					<Header />
+					<Route path="/shillelaghs-r-us" component={Header} />
+					<Route path="/admin" component={AdminNavbar} />
 
 					{window.location.pathname === "/" || window.location.pathname === "/shillelaghs-r-us/" ? <Redirect to="/shillelaghs-r-us/home" /> : null}
+					{window.location.pathname === "/shillelaghs-r-us/admin" ? <Redirect to="/admin" /> : null}
 
 					<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
 					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
 					<Route exact path="/shillelaghs-r-us/account" render={() =>
-						<Account 
-							updateInformation={setInformation} 
-							updateAddress={toggleAddress} 
-							addPaymentMethod={togglePaymentMethod} 
-							deletePaymentMethod={deletePaymentMethod} 
+						<Account
+							updateInformation={setInformation}
+							updateAddress={toggleAddress}
+							addPaymentMethod={togglePaymentMethod}
+							deletePaymentMethod={deletePaymentMethod}
 							toggleDelete={toggleDelete} />}
 					/>
 					<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
 					<Route exact path="/shillelaghs-r-us/history" component={History} />
 					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={checkoutClicked} removeFromCart={removeFromCart} />} />
+					<Route exact path="/admin/customers" render={() => <AdminCustomers />} />
+					<Route exact path="/admin/stock" render={() => <AdminStock />} />
+					<Route exact path="/admin/customer" render={() =>
+						<CustomerPage
+							updateInformation={setInformation}
+							updateAddress={toggleAddress}
+							addPaymentMethod={togglePaymentMethod}
+							deletePaymentMethod={deletePaymentMethod}
+							toggleDelete={toggleDelete}
+							ship={ship}
+							deleteOrder={deleteOrder} />}
+					/>
 					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
 					{info && <InformationModal close={setInformation} information={postInformation} info={info} />}
 					{addressModal && <AddressModal close={toggleAddress} address={postAddress} addressModal={addressModal} />}
 					{paymentModal && <PaymentModal close={togglePaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
 					{deleteConfirm && <DeleteModal close={toggleDelete} delete={deletePaymentMethod} />}
 
-
-					<Footbar />
+					<Route path="/shillelaghs-r-us" component={Footbar} />
 				</BrowserRouter>
 			</ShillelaghContext.Provider>
 		</main>

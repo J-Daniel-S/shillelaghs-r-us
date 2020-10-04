@@ -24,7 +24,9 @@ const customerCheckout = (props) => {
 			setTheAddress(event.currentTarget.customAddress.value);
 		}
 
-		if (!paymentMethod) {
+		if (active === 'card') {
+			props.checkoutClicked();
+		} else if (!paymentMethod) {
 			alert('Please select a payment method');
 		} else {
 			props.checkoutClicked();
@@ -137,7 +139,7 @@ const customerCheckout = (props) => {
 						{!paymentMethod && customerMethods}
 						{paymentMethod && method}
 						{!paymentMethod && <Form.Label>
-							<span>Alternate payment method  </span>{'   '}
+							{customer.methods.length === 0 ? <span>Select a payment method</span> : <span>Alternate payment method  </span>}{'   '}
 							<Clickable onClick={() => setActive('card')}><MDBIcon far icon="credit-card" /></Clickable>{'  '}
 							<Clickable onClick={() => setActive('paypal')}><MDBIcon fab icon="paypal" /></Clickable>{'  '}
 							<Clickable onClick={() => setActive('amazon')}><MDBIcon fab icon="amazon-pay" /></Clickable>{'  '}
