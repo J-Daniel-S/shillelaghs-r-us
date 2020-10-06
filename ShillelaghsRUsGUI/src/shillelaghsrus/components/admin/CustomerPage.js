@@ -9,9 +9,9 @@ import { AButton } from '../styles/Styles';
 
 const customerPage = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm,
 		// eslint-disable-next-line
-		confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod] = useContext(ShillelaghContext);
+		setDeleteConfirm, paymentMethod, setPaymentMethod] = useContext(ShillelaghContext);
 	const [orders, setOrders] = useState([]);
 	const { history } = useReactRouter()
 
@@ -35,7 +35,7 @@ const customerPage = (props) => {
 				}
 			});
 		} else {
-			history.push('/shillelaghs-r-us/admin');
+			history.push('/admin');
 		}
 
 	}, [customer])
@@ -44,10 +44,6 @@ const customerPage = (props) => {
 		let theNum = num.toString();
 		theNum = '****-' + theNum.substring(theNum.length - 4, theNum.length);
 		return theNum;
-	}
-
-	const deleteAdmin = () => {
-		alert('delete admin');
 	}
 
 	return (
@@ -61,7 +57,7 @@ const customerPage = (props) => {
 				</MDBCardHeader>
 				<MDBCardBody>{customer &&
 					<section>
-						{customer.admin && <h2 className="float-center"><strong>Administrator</strong></h2>}
+						{customer.admin && <h2><strong>Administrator</strong></h2>}
 						<p>Username: {customer.username}</p>
 						<p>First name: {customer.firstName}</p>
 						<p>Last name: {customer.lastName}</p>
@@ -70,7 +66,6 @@ const customerPage = (props) => {
 				</MDBCardBody>
 				<MDBCardFooter>
 					<Button variant="brown" onClick={() => props.updateInformation()}>Update</Button>
-					{customer && customer.admin && <Button variant="grey" onClick={() => deleteAdmin()}>Delete administrator account</Button>}
 				</MDBCardFooter>
 			</MDBCard>
 			<br></br>
@@ -120,45 +115,45 @@ const customerPage = (props) => {
 			</MDBCard>}
 			<br></br>
 			{customer && !customer.admin &&
-			<MDBCard>
-				<MDBCardHeader>
-					<p>Orders</p>
-				</MDBCardHeader>
-				<MDBCardBody>
-					{customer && orders.length === 0 && <p>No orders placed yet</p>}
-					{orders.length > 0 && <hr></hr>}
-					{customer && orders.length > 0 && orders.map((o, index) => (
-						<React.Fragment key={o.orderId}>
-							<MDBRow>
-								<MDBCol size="2">
-									Order number: <p>{o.orderId}</p>
-								</MDBCol>
-								<MDBCol size="4">
-									Shipped to: <p>{o.address}</p>
-								</MDBCol>
-								<MDBCol size="3">
-									Total: <p>${o.totalPrice}</p>
-								</MDBCol>
-								<MDBCol size="3">
-									Shillelaghs:
+				<MDBCard>
+					<MDBCardHeader>
+						<p>Orders</p>
+					</MDBCardHeader>
+					<MDBCardBody>
+						{customer && orders.length === 0 && <p>No orders placed yet</p>}
+						{orders.length > 0 && <hr></hr>}
+						{customer && orders.length > 0 && orders.map((o, index) => (
+							<React.Fragment key={o.orderId}>
+								<MDBRow>
+									<MDBCol size="2">
+										Order number: <p>{o.orderId}</p>
+									</MDBCol>
+									<MDBCol size="4">
+										Shipped to: <p>{o.address}</p>
+									</MDBCol>
+									<MDBCol size="3">
+										Total: <p>${o.totalPrice}</p>
+									</MDBCol>
+									<MDBCol size="3">
+										Shillelaghs:
 									{o.contents.map(s => <p key={s.shillelaghId}>{s.name}</p>)}
-								</MDBCol>
-							</MDBRow>
-							<MDBRow>
-								<MDBCol>
-									Shipped: {o.shipped ? 'Shipped' : <Button variant="brown" onClick={() => props.ship(o)}>Ship</Button>}
-								</MDBCol>
-								<MDBCol>
-									{!o.shipped && <Button variant="grey" onClick={() => props.deleteOrder(o)}>Cancel order</Button>}
-								</MDBCol>
-							</MDBRow>
-							<hr></hr>
-						</React.Fragment>
-					))}
-				</MDBCardBody>
-				<MDBCardFooter>
-				</MDBCardFooter>
-			</MDBCard>}
+									</MDBCol>
+								</MDBRow>
+								<MDBRow>
+									<MDBCol>
+										Shipped: {o.shipped ? 'Shipped' : <Button variant="brown" onClick={() => props.ship(o)}>Ship</Button>}
+									</MDBCol>
+									<MDBCol>
+										{!o.shipped && <Button variant="grey" onClick={() => props.deleteOrder(o)}>Cancel order</Button>}
+									</MDBCol>
+								</MDBRow>
+								<hr></hr>
+							</React.Fragment>
+						))}
+					</MDBCardBody>
+					<MDBCardFooter>
+					</MDBCardFooter>
+				</MDBCard>}
 		</MDBContainer>
 	);
 }

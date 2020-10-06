@@ -15,7 +15,7 @@ public class CustomerTest {
 
 	@Before
 	public void setup() {
-		timmy = new Customer("timmy", "timmerson", "1 timmehsplace dr timmerson, tm 13375");
+		timmy = new Customer("timmy", "timmerson", "1 timmehsplace dr timmerson, tm 13375", false);
 		orders = new ArrayList<>();
 		timmy.setOrders(orders);
 		timmy.setId(1);

@@ -15,7 +15,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "customers")
@@ -26,7 +25,7 @@ public class Customer {
 	@SequenceGenerator(name = "customer_id", allocationSize = 1)
 	@Column(name = "customer_id")
 	private long id;
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String username;
 	@Column(name = "first_name", nullable = true)
 	private String firstName;
@@ -34,13 +33,12 @@ public class Customer {
 	private String lastName;
 	@Column(nullable = true)
 	private String address;
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String email;
 	@OneToMany(targetEntity = Order.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customer")
 	@JsonIgnore
 	private List<Order> orders;
 	@OneToMany(targetEntity = Method.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customer")
-	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private List<Method> methods;
 	@Column(nullable = false)
 	private boolean admin;

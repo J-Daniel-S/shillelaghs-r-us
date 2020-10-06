@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { MDBInput, MDBCard, MDBCardBody, MDBIcon } from 'mdbreact';
 import { Button } from 'react-bootstrap';
-import axios from 'axios';
 import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../../../context/ShillelaghContext';
@@ -78,21 +77,25 @@ const register = (props) => {
 
 		const headers = {
 			'Access-Control-Allow-Origin': 'localhost:3000',
-			'Context-Type': 'Application/json',
+			'Content-Type': 'Application/json',
 			method: 'POST'
 		}
 
-		axios.post("http://localhost:8090/shillelaghs-r-us/customers", customer, { headers })
-			.then(res => {
+		fetch("http://localhost:8090/shillelaghs-r-us/customers", 
+			{
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(customer)
+			}).then(res => {
 				if (res.status === 201) {
-					setCustomer(res.data);
-				history.push("/shillelaghs-r-us/home");
-				} else  {
+					res.json().then(res => {
+						setCustomer(res);
+						history.push("/shillelaghs-r-us/home");
+					});
+				} else {
 					alert("There was a problem creating your account.  If the problem persists please contact us");
 				}
-				
-			}
-			);
+			});
 		}
 	}
 

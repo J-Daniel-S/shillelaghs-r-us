@@ -103,8 +103,13 @@ public class CustomerController {
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteCustomer(@PathVariable long id) {
-		cusRepo.delete(id);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+		if (cusRepo.exists(id)) {
+			cusRepo.delete(id);
+			return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+		} else {
+			throw new NoSuchCustomerException("Customer does not exist: id-" + id);
+		}
+
 	}
 
 	// for testing

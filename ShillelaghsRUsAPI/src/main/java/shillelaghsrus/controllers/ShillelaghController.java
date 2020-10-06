@@ -33,7 +33,7 @@ public class ShillelaghController {
 	public ResponseEntity addShillelagh(@RequestBody Shillelagh shillelagh) {
 		shiRepo.save(shillelagh);
 		if (shiRepo.exists(shillelagh.getShillelaghId())) {
-			return ResponseEntity.status(HttpStatus.CREATED).build();
+			return ResponseEntity.status(HttpStatus.CREATED).body(shiRepo.findAll());
 		} else {
 			throw new RuntimeException("Shillelagh not saved");
 		}

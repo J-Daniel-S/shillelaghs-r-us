@@ -111,6 +111,7 @@ public class OrderController {
 			List<Long> ids = order.getContents().stream().map(s -> s.getShillelaghId()).collect(Collectors.toList());
 			Iterable<Shillelagh> shillelaghs = shiRepo.findbyId(ids);
 			shillelaghs.forEach(s -> s.setOrder(null));
+			shillelaghs.forEach(s -> s.setOrdered(false));
 			shillelaghs.forEach(s -> shiRepo.save(s));
 			oRepo.deleteById(orderId);
 			if (oRepo.exists(orderId)) {

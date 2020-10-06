@@ -23,6 +23,7 @@ const adminNavbar = (props) => {
 
 	const logout = () => {
 		setAdmin(null);
+		setCustomer(null);
 		history.push('/shillelaghs-r-us/home');
 	}
 

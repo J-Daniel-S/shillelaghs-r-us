@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { MDBContainer, MDBListGroup, MDBListGroupItem, MDBRow } from 'mdbreact';
 import { Button, Form } from 'react-bootstrap';
-import axios from 'axios';
 
 const adminStock = (props) => {
 	const [name, setName] = useState();
 	const [price, setPrice] = useState();
 	const [shillelaghs, setShillelaghs] = useState([]);
 	const [picture, setPicture] = useState(false);
+	const [needUpdate, setNeedUpdate] = useState(false);
 
 	useEffect(() => {
 		fetch('http://localhost:8090/shillelaghs-r-us/shillelaghs')
@@ -18,7 +18,8 @@ const adminStock = (props) => {
 					alert('Cannot reach server');
 				}
 			});
-	}, []);
+		setNeedUpdate(false);
+	}, [needUpdate]);
 
 	const changed = input => event => {
 		switch (input) {
@@ -35,6 +36,7 @@ const adminStock = (props) => {
 
 	const addShillelagh = (event) => {
 		const form = event.currentTarget;
+		event.preventDefault();
 
 		if (!picture) {
 			alert("You didn't upload a picture");
@@ -53,11 +55,25 @@ const adminStock = (props) => {
 				'Accept': 'application/json, text/plain, */*',
 			}
 
-			axios.post('http://localhost:8090/shillelaghs-r-us/shillelaghs', newShillelagh, { headers }).then(res => res.status === 201 ? null : alert('Failed to add shillelagh'));
+			fetch('http://localhost:8090/shillelaghs-r-us/shillelaghs', 
+				{
+					method: 'POST',
+					headers: headers,
+					body: JSON.stringify(newShillelagh)
+				})
+				.then(res => res.status === 201 ? res.json().then(res => addToStock(res)) : alert('Failed to add shillelagh'));
+
 		}
 	}
 
-	const deleteShillelagh = (shillelagh) => {
+	const addToStock = data => {
+		setShillelaghs(data);
+		setNeedUpdate(true);
+		setName('');
+		setPrice('');
+	}
+
+	const deleteShillelagh = shillelagh => {
 
 		const headers = {
 			'Content-type': 'application/json',
@@ -66,7 +82,13 @@ const adminStock = (props) => {
 			'Accept': 'application/json, text/plain, */*',
 		}
 
-		axios.delete('http://localhost:8090/shillelaghs-r-us/shillelaghs/' + shillelagh.shillelaghId, {}, { headers }).then(res => res.status === 202 ? setShillelaghs(res.data) : alert('Failed to delete shillelagh'));
+		fetch('http://localhost:8090/shillelaghs-r-us/shillelaghs/' + shillelagh.shillelaghId, 
+			{
+				method: 'DELETE',
+				headers: headers,
+				body: {}
+			}).then(res => res.status === 202 ? res.json().then(res => setShillelaghs(res)) : alert('Failed to delete shillelagh'));
+
 	}
 
 	return (
@@ -96,7 +118,7 @@ const adminStock = (props) => {
 				<MDBListGroup>
 					{shillelaghs && shillelaghs.map(s => (
 						<MDBListGroupItem key={s.shillelaghId}>
-							Shillelagh Id: {s.shillelaghId} | name: {s.name} | Price: {s.price}
+							Shillelagh Id: {s.shillelaghId} | name: {s.name} | Price: {Number.parseFloat(s.price).toFixed(2)} | In stock: {s.shipped ? 'No' : 'Yes'} | Available: {s.ordered ? 'No' : 'Yes'}
 							<Button className="float-right" onClick={() => deleteShillelagh(s)} variant="grey">Delete</Button>
 						</MDBListGroupItem>
 					))}

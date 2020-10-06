@@ -2,21 +2,24 @@ import React, { useEffect, useState, useContext } from 'react';
 import { MDBContainer, MDBListGroup, MDBListGroupItem, MDBRow } from 'mdbreact';
 import { Button, Form } from 'react-bootstrap';
 import useReactRouter from 'use-react-router';
-import axios from 'axios';
 
 import ShillelaghContext from '../../context/ShillelaghContext';
 
 const adminCustomers = (props) => {
 	// eslint-disable-next-line
-	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen,
+	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm,
 		// eslint-disable-next-line
-		cartContents, setCartContents, confirm, setConfirm, order, setOrder, id, setId] = useContext(ShillelaghContext);
+		 setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, loggedAdmin, setLoggedAdmin] = useContext(ShillelaghContext);
 	const [customers, setCustomers] = useState([]);
 	const [name, setName] = useState();
 	const [email, setEmail] = useState();
+	const [administrator, setAdministrator] = useState(false);
 	const { history } = useReactRouter();
 
 	useEffect(() => {
+		if (!loggedAdmin) {
+			history.push('/shillelaghs-r-us/home');
+		}
 		getCustomers();
 	}, []);
 
@@ -63,26 +66,37 @@ const adminCustomers = (props) => {
 			username: uName,
 			firstName: uName,
 			email: theEmail,
-			admin: form.adminCheckbox.value,
+			admin: form.admin.value,
 			password: 'welcome!'
 		}
 
 		const headers = {
 			'Access-Control-Allow-Origin': 'localhost:3000',
-			'Context-Type': 'Application/json',
+			'Content-Type': 'Application/json; charset=utf-8',
 			method: 'POST'
 		}
 
-		axios.post("http://localhost:8090/shillelaghs-r-us/customers", newCustomer, { headers })
-			.then(res => {
+		fetch("http://localhost:8090/shillelaghs-r-us/customers", 
+			{
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(newCustomer)
+			}).then(res => {
 				if (res.status === 201) {
 					getCustomers();
 				} else {
-					alert("There was a problem creating your account.  If the problem persists please contact us");
+					alert("There was a problem creating the account.  If the problem persists please contact us");
 				}
+			});
 
-			}
-			);
+	}
+
+	const toggleAdmin = () => {
+		if (administrator) {
+			setAdministrator(false);
+		} else {
+			setAdministrator(true);
+		}
 	}
 
 	return (
@@ -99,7 +113,7 @@ const adminCustomers = (props) => {
 						<Form.Control required type="email" value={email} onChange={() => changed("email")} />
 					</Form.Group>
 					<Form.Group controlId="admin">
-						<Form.Check type='checkbox' id="adminCheckbox" label='Administrator?' />
+						<Form.Check type='switch' id="admin" label='Administrator' value={administrator} onChange={toggleAdmin} />
 					</Form.Group>
 					<Form.Label>The customer's default password will be 'welcome!'</Form.Label>
 					<MDBRow>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import fetchIntercept from 'fetch-intercept';
 
 import Header from './header/Header';
 import AdminNavbar from './navigation/AdminNavbar';
@@ -20,6 +20,7 @@ import InformationModal from './components/account/information/informationModal'
 import AddressModal from './components/account/information/addressModal';
 import PaymentModal from './components/account/information/paymentModal';
 import DeleteModal from './components/deleteModal';
+import ErrorModal from './error/errorModal';
 import './App.css';
 
 const app = (props) => {
@@ -38,19 +39,40 @@ const app = (props) => {
 	const [paymentMethod, setPaymentMethod] = useState(null);
 	const [address, setAddress] = useState(null);
 	const [admin, setAdmin] = useState(null);
+	const [error, setError] = useState(false);
 
 	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
-		 confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin];
+		confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin, error, setError];
 
 	useEffect(() => {
-		axios.get('http://localhost:8090/shillelaghs-r-us/shillelaghs/').then(res => {
-			setShillelaghs(res.data)
-		}
-		);
+		fetch('http://localhost:8090/shillelaghs-r-us/shillelaghs/').then(res => res.json()).then(res => {
+			setShillelaghs(res);
+		})
 		if (queryNeeded) {
 			setQueryNeeded(false)
 		}
 	}, [queryNeeded]);
+
+	const unregister = fetchIntercept.register({
+		request: function (url, config) {
+			// Modify the url or config here
+			return [url, config];
+		},
+		requestError: function (error) {
+			setError(true);
+			return Promise.reject(error);
+		},
+
+		response: function (response) {
+			setError(true);
+			return response;
+		},
+
+		responseError: function (error) {
+			// Handle an fetch error
+			return Promise.reject(error);
+		}
+	});
 
 	const postOrder = () => {
 
@@ -78,17 +100,25 @@ const app = (props) => {
 			'Accept': 'application/json, text/plain, */*',
 		}
 
-		axios.post('http://localhost:8090/shillelaghs-r-us/orders/' + customer.id, theOrder, { headers })
-			.then(res => {
-				if (res.status === 201) {
+		fetch('http://localhost:8090/shillelaghs-r-us/orders/' + customer.id,
+			{
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(theOrder)
+			}
+		).then(res => {
+			if (res.status === 201) {
+				res.json().then(res => {
 					alert('order placed!');
 					setOrder(null);
 					setCartContents([]);
 					setAddress(null)
-				} else {
-					alert('There was a problem.  If the problem persists please contact us');
-				}
-			});
+				})
+			} else {
+				alert('There was a problem.  If the problem persists please contact us');
+			}
+		});
+
 	}
 
 	const checkoutClicked = () => {
@@ -101,7 +131,7 @@ const app = (props) => {
 		setCartContents(arr);
 	}
 
-	const setInformation = () => {
+	const toggleInformation = () => {
 		if (info) {
 			setInfo(false);
 		} else {
@@ -135,7 +165,7 @@ const app = (props) => {
 		}
 
 		if (!fName && !lName && !email) {
-			setInformation();
+			toggleInformation();
 		} else {
 
 			const theCustomer = customer;
@@ -151,15 +181,14 @@ const app = (props) => {
 				'Accept': 'application/json, text/plain, */*',
 			}
 
-			axios.put('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id, theCustomer, { headers }).then(res => {
-				if (res.status === 202) {
-					setCustomer(res.data);
-				} else {
-					alert('Customer update failed!  Please contact us if the problem persists');
-				}
-			});
+			fetch('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id,
+				{
+					method: 'PUT',
+					headers: headers,
+					body: JSON.stringify(theCustomer)
+				});
 
-			setInformation();
+			toggleInformation();
 		}
 	}
 
@@ -191,13 +220,12 @@ const app = (props) => {
 				'Accept': 'application/json, text/plain, */*',
 			}
 
-			axios.put('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id, theCustomer, { headers }).then(res => {
-				if (res.status === 202) {
-					setCustomer(res.data);
-				} else {
-					alert('Customer update failed!  Please contact us if the problem persists');
-				}
-			});
+			fetch('http://localhost:8090/shillelaghs-r-us/customers/' + theCustomer.id,
+				{
+					method: 'PUT',
+					headers: headers,
+					body: JSON.stringify(theCustomer)
+				});
 
 			toggleAddress();
 		}
@@ -252,13 +280,20 @@ const app = (props) => {
 			'Accept': 'application/json, text/plain, */*',
 		}
 
-		axios.post('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id, body, { headers }).then(res => {
-			if (res.status === 202) {
-				setCustomer(res.data);
-			} else {
-				alert('Payment method not added!  Please contact us if the problem persists');
-			}
-		});
+		fetch('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id,
+			{
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(body)
+
+			}).then(res => {
+				if (res.status === 202) {
+					res.json().then(res => setCustomer(res));
+				} else {
+					alert('Payment method not added!  Please contact us if the problem persists');
+				}
+			});
+
 	}
 
 	const toggleDelete = () => {
@@ -272,13 +307,17 @@ const app = (props) => {
 	const deletePaymentMethod = () => {
 		toggleDelete();
 
-		axios.delete('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id + '/' + paymentMethod.id).then(res => {
-			if (res.status === 202) {
-				setCustomer(res.data);
-			} else {
-				alert('Payment method not deleted!  Please contact us if the problem persists');
-			}
-		})
+		fetch('http://localhost:8090/shillelaghs-r-us/payment/' + customer.id + '/' + paymentMethod.id,
+			{
+				method: 'DELETE'
+			}).then(res => {
+				if (res.status === 202) {
+					res.json().then(res => setCustomer(res));
+				} else {
+					alert('Payment method not deleted!  Please contact us if the problem persists');
+				}
+			});
+
 	}
 
 	const ship = (o) => {
@@ -329,6 +368,12 @@ const app = (props) => {
 		})
 	}
 
+	const clearError = () => {
+		setError(false);
+	}
+
+	unregister();
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
@@ -343,7 +388,7 @@ const app = (props) => {
 					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
 					<Route exact path="/shillelaghs-r-us/account" render={() =>
 						<Account
-							updateInformation={setInformation}
+							updateInformation={toggleInformation}
 							updateAddress={toggleAddress}
 							addPaymentMethod={togglePaymentMethod}
 							deletePaymentMethod={deletePaymentMethod}
@@ -356,7 +401,7 @@ const app = (props) => {
 					<Route exact path="/admin/stock" render={() => <AdminStock />} />
 					<Route exact path="/admin/customer" render={() =>
 						<CustomerPage
-							updateInformation={setInformation}
+							updateInformation={toggleInformation}
 							updateAddress={toggleAddress}
 							addPaymentMethod={togglePaymentMethod}
 							deletePaymentMethod={deletePaymentMethod}
@@ -365,10 +410,11 @@ const app = (props) => {
 							deleteOrder={deleteOrder} />}
 					/>
 					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
-					{info && <InformationModal close={setInformation} information={postInformation} info={info} />}
+					{info && <InformationModal close={toggleInformation} information={postInformation} info={info} />}
 					{addressModal && <AddressModal close={toggleAddress} address={postAddress} addressModal={addressModal} />}
 					{paymentModal && <PaymentModal close={togglePaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
 					{deleteConfirm && <DeleteModal close={toggleDelete} delete={deletePaymentMethod} />}
+					{error && <ErrorModal error={error} close={clearError} />}
 
 					<Route path="/shillelaghs-r-us" component={Footbar} />
 				</BrowserRouter>

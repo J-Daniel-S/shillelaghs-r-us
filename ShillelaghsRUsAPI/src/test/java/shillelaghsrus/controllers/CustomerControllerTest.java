@@ -35,8 +35,8 @@ public class CustomerControllerTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		controller = new CustomerController(cusRepo);
-		timmy = new Customer("timmy", "timmerson", "3664 timmehsplace dr timmerson, ti 41388");
-		stevie = new Customer("stevie", "steverson", "78 steviesplace dr steverson, st 21766");
+		timmy = new Customer("timmy", "timmerson", "3664 timmehsplace dr timmerson, ti 41388", false);
+		stevie = new Customer("stevie", "steverson", "78 steviesplace dr steverson, st 21766", false);
 		timmy.setId(1);
 		stevie.setId(2);
 		customers = new ArrayList<Customer>();
@@ -93,7 +93,7 @@ public class CustomerControllerTest {
 	@Test
 	public void testPostCustomer() {
 		// given
-		Customer mikey = new Customer("mikey", "mikerson", "2 mikely st mikesville, me 23799");
+		Customer mikey = new Customer("mikey", "mikerson", "2 mikely st mikesville, me 23799", false);
 		when(cusRepo.save(any(Customer.class))).thenReturn(true);
 		when(cusRepo.findById(anyLong())).thenReturn(mikey);
 

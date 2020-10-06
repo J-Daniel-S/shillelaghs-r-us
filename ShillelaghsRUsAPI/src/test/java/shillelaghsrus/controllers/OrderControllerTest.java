@@ -45,7 +45,7 @@ public class OrderControllerTest {
 		shillelagh = new Shillelagh("timmy's new club");
 		contents = new ArrayList<Shillelagh>();
 		contents.add(shillelagh);
-		timmy = new Customer("timmy", "timmerson", "3664 timmehsplace dr timmerson, ti 41388");
+		timmy = new Customer("timmy", "timmerson", "3664 timmehsplace dr timmerson, ti 41388", false);
 		order = new Order(LocalDateTime.now(), "here", timmy, contents);
 		order.setOrderId(1);
 		orders = new ArrayList<Order>();
@@ -107,7 +107,7 @@ public class OrderControllerTest {
 		when(oRepo.exists(anyLong())).thenReturn(true).thenReturn(false);
 
 		// when
-		ResponseEntity response = controller.deleteOrder(order.getOrderId());
+		ResponseEntity response = controller.deleteOrder(timmy.getId(), order.getOrderId());
 
 		// then
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);

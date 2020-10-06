@@ -7,14 +7,17 @@ import ShillelaghContext from '../context/ShillelaghContext';
 const confirmModal = (props) => {
 	const { history } = useReactRouter();
 	// eslint-disable-next-line
-	const [ shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm ] = useContext(ShillelaghContext);
+	const [ shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,  confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, 
+			// eslint-disable-next-line
+		setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin ] = useContext(ShillelaghContext);
 
 	const confirmed = () => {
 		props.refresh(true);
 		setConfirm(false);
 		setCartOpen(false);
+		setPaymentMethod(null);
 		props.order();
-		setTimeout(() => history.push('/shillelaghs-r-us/account'), 1000);
+		setTimeout(() => history.push('/shillelaghs-r-us/account'), 1500);
 	}
 
 	return (
