@@ -31,6 +31,10 @@ const navbar = (props) => {
 		history.push("/shillelaghs-r-us/account");
 	}
 
+	const logout = () => {
+		setCustomer(null);
+	}
+
 	let theCustomer;
 
 	if (customer) {
@@ -51,8 +55,8 @@ const navbar = (props) => {
 						</Span>}
 				</MDBNavItem>
 			<MDBNavItem>
-				{customer && <Span onClick={() => setCustomer(null)} >Logout</Span>}
-				{!customer && <Span onClick={() => signIn()}>Sign in / register</Span>}
+				{customer && <Span onClick={logout} >Logout</Span>}
+				{!customer && <Span onClick={signIn}>Sign in / register</Span>}
 			</MDBNavItem>
 			</MDBNavbarNav>
 		</MDBNavbar >

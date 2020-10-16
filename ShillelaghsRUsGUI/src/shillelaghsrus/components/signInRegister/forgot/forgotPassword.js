@@ -21,7 +21,7 @@ const forgotPassword = (props) => {
 
 	const submitted = (event) => {
 		event.preventDefault();
-		alert('You will receive and email to help you reset your password shortly');
+		alert('You will receive and email to help you reset your password shortly if your username exists');
 		history.push("/shillelaghs-r-us/sign-in");
 	}
 

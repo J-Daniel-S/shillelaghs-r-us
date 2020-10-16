@@ -23,9 +23,9 @@ INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (2
 INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (23, 'Samwise', false, false, 44.00);
 INSERT INTO shillelaghs (shillelagh_id, name, ordered, shipped, price) VALUES (24, 'Jeff', false, false, 42.00);
 
-INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin) VALUES (1, 'morty88thecleansed', 'morton', 'higsby', '9999 Placeyplace Dr Kevinson, KY 24468', 'Yorspur@yorspur.com', false);
-INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417', 'Therspen@therspen.com', true);
-INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin) VALUES (3, 'spurson', 'Spurtersly', 'Elconsomin', '51903 Phoinon Ct Jefferson, JF 27844', 'spurson@murson.com', false);
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin, password) VALUES (1, 'morty88thecleansed', 'morton', 'higsby', '9999 Placeyplace Dr Kevinson, KY 24468', 'Yorspur@yorspur.com', false, '$2a$10$91XiVsTyY1hXafQ3O1g5muUY0Vk8LF8eK1Lh11HOvgdW8szLbQ5b6');
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin, password) VALUES (2, 'kilsport', 'kilsburton', 'portersmouth', '103 Yorkinson Pl Martinson, GA 34417', 'Therspen@therspen.com', true, '$2a$10$91XiVsTyY1hXafQ3O1g5muUY0Vk8LF8eK1Lh11HOvgdW8szLbQ5b6');
+INSERT INTO customers (customer_id, username, first_name, last_name, address, email, admin, password) VALUES (3, 'spurson', 'Spurtersly', 'Elconsomin', '51903 Phoinon Ct Jefferson, JF 27844', 'spurson@murson.com', false, '$2a$10$91XiVsTyY1hXafQ3O1g5muUY0Vk8LF8eK1Lh11HOvgdW8szLbQ5b6');
 
 INSERT INTO methods (method_id, payment_type, card_type, customer_id, number, routing_number, confirmation_number, expiration_date) VALUES (1, 0, 1, 3, 1677546223856798, null, 469, TO_DATE('2024-12-01', 'YYYY-MM-DD'));
 INSERT INTO methods (method_id, payment_type, card_type, customer_id, number, routing_number, confirmation_number, expiration_date) VALUES (2, 1, null, 3, 138549762554, 136985662247, null, null);

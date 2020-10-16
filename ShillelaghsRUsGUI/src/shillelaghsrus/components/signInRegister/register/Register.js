@@ -4,15 +4,16 @@ import { Button } from 'react-bootstrap';
 import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../../../context/ShillelaghContext';
+import { useAuth } from '../../../context/AuthContext';
 
 const register = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer] = useContext(ShillelaghContext);
+	const { setAuthTokens } = useAuth();
 	const [uName, setUName] = useState("");
 	const [fName, setFName] = useState("");
 	const [lName, setLName] = useState("");
 	const [email, setEmail] = useState("");
-	const [cEmail, setCEmail] = useState("");
 	const [address, setAddress] = useState("");
 	const [password, setPassword] = useState("");
 	const [cPassword, setCPassword] = useState("");
@@ -36,9 +37,6 @@ const register = (props) => {
 			case "email":
 				setEmail(event.target.value);
 				break;
-			case "cEmail":
-				setCEmail(event.target.value);
-				break;
 			case "address":
 				setAddress(event.target.value);
 				break;
@@ -56,11 +54,7 @@ const register = (props) => {
 	const submitted = (event) => {
 		event.preventDefault();
 
-		if (cEmail !== email) {
-			alert("The emails provided don't match");
-			setEmail("");
-			setCEmail("");
-		} else if (cPassword !== password) {
+		if (cPassword !== password) {
 			alert("The passwords provided don't match");
 			setCPassword("");
 			setPassword("");
@@ -81,7 +75,7 @@ const register = (props) => {
 			method: 'POST'
 		}
 
-		fetch("http://localhost:8090/shillelaghs-r-us/customers", 
+		fetch("http://localhost:8090/shillelaghs-r-us/register", 
 			{
 				method: 'POST',
 				headers: headers,
@@ -89,7 +83,8 @@ const register = (props) => {
 			}).then(res => {
 				if (res.status === 201) {
 					res.json().then(res => {
-						setCustomer(res);
+						setCustomer(res.customer);
+						setAuthTokens(res.token);
 						history.push("/shillelaghs-r-us/home");
 					});
 				} else {
@@ -150,17 +145,6 @@ const register = (props) => {
 							success="right"
 							value={email}
 							onChange={changed("email")}
-							required
-						/>
-						<MDBInput
-							label="Confirm your email"
-							group
-							type="text"
-							validate
-							error="wrong"
-							success="right"
-							value={cEmail}
-							onChange={changed("cEmail")}
 							required
 						/>
 						<MDBIcon icon="address-card" />

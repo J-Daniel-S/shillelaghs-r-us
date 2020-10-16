@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
-import fetchIntercept from 'fetch-intercept';
 
 import Header from './header/Header';
 import AdminNavbar from './navigation/AdminNavbar';
@@ -52,27 +51,6 @@ const app = (props) => {
 			setQueryNeeded(false)
 		}
 	}, [queryNeeded]);
-
-	const unregister = fetchIntercept.register({
-		request: function (url, config) {
-			// Modify the url or config here
-			return [url, config];
-		},
-		requestError: function (error) {
-			setError(true);
-			return Promise.reject(error);
-		},
-
-		response: function (response) {
-			setError(true);
-			return response;
-		},
-
-		responseError: function (error) {
-			// Handle an fetch error
-			return Promise.reject(error);
-		}
-	});
 
 	const postOrder = () => {
 
@@ -371,8 +349,6 @@ const app = (props) => {
 	const clearError = () => {
 		setError(false);
 	}
-
-	unregister();
 
 	return (
 		<main>

@@ -40,8 +40,10 @@ public class Customer {
 	private List<Order> orders;
 	@OneToMany(targetEntity = Method.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "customer")
 	private List<Method> methods;
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private boolean admin;
+	@Column(nullable = true)
+	private String password;
 
 	public Customer(String firstName, String lastName, String address, boolean admin) {
 		super();
@@ -53,6 +55,19 @@ public class Customer {
 		this.admin = admin;
 	}
 
+	public Customer(String username, String firstName, String lastName, String address, String password, String email) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.orders = new ArrayList<Order>();
+		this.methods = new ArrayList<Method>();
+		this.admin = false;
+	}
+
 	public Customer() {
 		super();
 		this.orders = new ArrayList<Order>();
@@ -61,6 +76,14 @@ public class Customer {
 
 	public List<Method> getMethods() {
 		return methods;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public boolean isAdmin() {

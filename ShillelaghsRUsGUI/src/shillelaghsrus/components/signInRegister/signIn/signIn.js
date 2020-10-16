@@ -4,12 +4,14 @@ import { Button } from 'react-bootstrap';
 import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../../../context/ShillelaghContext';
+import { useAuth } from '../../../context/AuthContext';
 
 const signIn = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents, confirm, setConfirm, order, setOrder, price, setPrice,
 		// eslint-disable-next-line
-		 deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin] = useContext(ShillelaghContext);
+		deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin] = useContext(ShillelaghContext);
+	const { setAuthTokens } = useAuth();
 	const [username, setUsername] = useState();
 	const [password, setPassword] = useState();
 	const { history } = useReactRouter();
@@ -34,18 +36,30 @@ const signIn = (props) => {
 	const login = (event) => {
 		event.preventDefault();
 
+		const login = {
+			username: username,
+			password: password
+		}
+
+		const headers = {
+			'Content-type': 'application/json',
+			'Access-Control-Allow-Origin': 'localhost:3000/',
+			'Access-Control-Allow-Methods': 'POST',
+			'Accept': 'application/json, text/plain, */*',
+		}
+
 		fetch(
-			'http://localhost:8090/shillelaghs-r-us/customers/name/' + username,
+			'http://localhost:8090/shillelaghs-r-us/login',
 			{
-				method: 'GET',
-				headers: {
-					Accept: 'application/json, text/plain, */*'
-				}
+				method: 'POST',
+				headers: headers,
+				body: JSON.stringify(login)
 			}
 		).then(res => {
 			if (res.status === 302) {
 				res.json().then(res => {
-					setCustomer(res);
+					setCustomer(res.customer);
+					setAuthTokens(res.token);
 					if (window.location.pathname === "/shillelaghs-r-us/sign-in") {
 						history.push("/shillelaghs-r-us/home");
 					} else if (window.location.pathname === "/shillelaghs-r-us/sign-in/checkout") {
@@ -54,9 +68,13 @@ const signIn = (props) => {
 				})
 			} else if (res.status === 202) {
 				res.json().then(res => {
-					setAdmin(res);
+					setAdmin(res.customer);
+					setAuthTokens(res.token);
 					history.push('/admin');
 				})
+			} else if (res.status === 409) {
+				setPassword('');
+				alert('The password entered does not match the password on file');
 			} else {
 				setUsername('');
 				setPassword('');
