@@ -20,6 +20,7 @@ import AddressModal from './components/account/information/addressModal';
 import PaymentModal from './components/account/information/paymentModal';
 import DeleteModal from './components/deleteModal';
 import ErrorModal from './error/errorModal';
+import { AuthContext } from './context/AuthContext';
 import './App.css';
 
 const app = (props) => {
@@ -39,6 +40,8 @@ const app = (props) => {
 	const [address, setAddress] = useState(null);
 	const [admin, setAdmin] = useState(null);
 	const [error, setError] = useState(false);
+	const existingTokens = JSON.parse(localStorage.getItem("tokens"));
+	const [authTokens, setAuthTokens] = useState(existingTokens);
 
 	const values = [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
 		confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod, address, setAddress, admin, setAdmin, error, setError];
@@ -350,50 +353,57 @@ const app = (props) => {
 		setError(false);
 	}
 
+	const setTokens = (data) => {
+		localStorage.setItem("tokens", JSON.stringify(data));
+		setAuthTokens(data);
+	}
+
 	return (
 		<main>
 			<ShillelaghContext.Provider value={[...values]}>
-				<BrowserRouter>
-					<Route path="/shillelaghs-r-us" component={Header} />
-					<Route path="/admin" component={AdminNavbar} />
+				<AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
+					<BrowserRouter>
+						<Route path="/shillelaghs-r-us" component={Header} />
+						<Route path="/admin" component={AdminNavbar} />
 
-					{window.location.pathname === "/" || window.location.pathname === "/shillelaghs-r-us/" ? <Redirect to="/shillelaghs-r-us/home" /> : null}
-					{window.location.pathname === "/shillelaghs-r-us/admin" ? <Redirect to="/admin" /> : null}
+						{window.location.pathname === "/" || window.location.pathname === "/shillelaghs-r-us/" ? <Redirect to="/shillelaghs-r-us/home" /> : null}
+						{window.location.pathname === "/shillelaghs-r-us/admin" ? <Redirect to="/admin" /> : null}
 
-					<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
-					<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
-					<Route exact path="/shillelaghs-r-us/account" render={() =>
-						<Account
-							updateInformation={toggleInformation}
-							updateAddress={toggleAddress}
-							addPaymentMethod={togglePaymentMethod}
-							deletePaymentMethod={deletePaymentMethod}
-							toggleDelete={toggleDelete} />}
-					/>
-					<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
-					<Route exact path="/shillelaghs-r-us/history" component={History} />
-					<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={checkoutClicked} removeFromCart={removeFromCart} />} />
-					<Route exact path="/admin/customers" render={() => <AdminCustomers />} />
-					<Route exact path="/admin/stock" render={() => <AdminStock />} />
-					<Route exact path="/admin/customer" render={() =>
-						<CustomerPage
-							updateInformation={toggleInformation}
-							updateAddress={toggleAddress}
-							addPaymentMethod={togglePaymentMethod}
-							deletePaymentMethod={deletePaymentMethod}
-							toggleDelete={toggleDelete}
-							ship={ship}
-							deleteOrder={deleteOrder} />}
-					/>
-					{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
-					{info && <InformationModal close={toggleInformation} information={postInformation} info={info} />}
-					{addressModal && <AddressModal close={toggleAddress} address={postAddress} addressModal={addressModal} />}
-					{paymentModal && <PaymentModal close={togglePaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
-					{deleteConfirm && <DeleteModal close={toggleDelete} delete={deletePaymentMethod} />}
-					{error && <ErrorModal error={error} close={clearError} />}
+						<Route exact path="/shillelaghs-r-us/home" render={() => <InStock removeFromCart={removeFromCart} />} />
+						<Route path="/shillelaghs-r-us/sign-in" component={SignInUp} />
+						<Route exact path="/shillelaghs-r-us/account" render={() =>
+							<Account
+								updateInformation={toggleInformation}
+								updateAddress={toggleAddress}
+								addPaymentMethod={togglePaymentMethod}
+								deletePaymentMethod={deletePaymentMethod}
+								toggleDelete={toggleDelete} />}
+						/>
+						<Route exact path="/shillelaghs-r-us/contact" component={Contact} />
+						<Route exact path="/shillelaghs-r-us/history" component={History} />
+						<Route exact path="/shillelaghs-r-us/checkout" render={() => <Checkout confirm={setConfirm} checkoutClicked={checkoutClicked} removeFromCart={removeFromCart} />} />
+						<Route exact path="/admin/customers" render={() => <AdminCustomers />} />
+						<Route exact path="/admin/stock" render={() => <AdminStock />} />
+						<Route exact path="/admin/customer" render={() =>
+							<CustomerPage
+								updateInformation={toggleInformation}
+								updateAddress={toggleAddress}
+								addPaymentMethod={togglePaymentMethod}
+								deletePaymentMethod={deletePaymentMethod}
+								toggleDelete={toggleDelete}
+								ship={ship}
+								deleteOrder={deleteOrder} />}
+						/>
+						{confirm && <ConfirmModal order={postOrder} refresh={setQueryNeeded} />}
+						{info && <InformationModal close={toggleInformation} information={postInformation} info={info} />}
+						{addressModal && <AddressModal close={toggleAddress} address={postAddress} addressModal={addressModal} />}
+						{paymentModal && <PaymentModal close={togglePaymentMethod} payment={postPaymentMethod} paymentModal={paymentModal} />}
+						{deleteConfirm && <DeleteModal close={toggleDelete} delete={deletePaymentMethod} />}
+						{error && <ErrorModal error={error} close={clearError} />}
 
-					<Route path="/shillelaghs-r-us" component={Footbar} />
-				</BrowserRouter>
+						<Route path="/shillelaghs-r-us" component={Footbar} />
+					</BrowserRouter>
+				</AuthContext.Provider>
 			</ShillelaghContext.Provider>
 		</main>
 	);

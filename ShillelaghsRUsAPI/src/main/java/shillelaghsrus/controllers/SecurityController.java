@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -55,30 +57,36 @@ public class SecurityController {
 		if (cusRepo.exists(login.getUsername())) {
 			Customer customer = service.findCustomerByUsername(login.getUsername());
 
-			if (encoder.matches(login.getPassword(), customer.getPassword())) {
-
-				Map<Object, Object> model = new HashMap<>();
-
-				model.put("customer", customer);
-
-				if (customer.isAdmin()) {
-
-					String token = provider.createToken(String.valueOf(customer.getId()),
-							new SimpleGrantedAuthority("ADMIN"));
-					model.put("token", "Bearer " + token);
-
-					return ResponseEntity.status(HttpStatus.ACCEPTED).body(model);
-				} else {
-
-					String token = provider.createToken(String.valueOf(customer.getId()),
-							new SimpleGrantedAuthority("USER"));
-					model.put("token", "Bearer " + token);
-
-					return ResponseEntity.status(HttpStatus.FOUND).body(model);
-				}
-			} else {
+			try {
+				manager.authenticate(new UsernamePasswordAuthenticationToken(customer.getId(), customer.getPassword()));
+			} catch (AuthenticationException e) {
 				return ResponseEntity.status(HttpStatus.CONFLICT).build();
 			}
+
+//			if (encoder.matches(login.getPassword(), customer.getPassword())) {
+
+			Map<Object, Object> model = new HashMap<>();
+
+			model.put("customer", customer);
+
+			if (customer.isAdmin()) {
+
+				String token = provider.createToken(String.valueOf(customer.getId()),
+						new SimpleGrantedAuthority("ADMIN"));
+				model.put("token", "Bearer " + token);
+
+				return ResponseEntity.status(HttpStatus.ACCEPTED).body(model);
+			} else {
+
+				String token = provider.createToken(String.valueOf(customer.getId()),
+						new SimpleGrantedAuthority("USER"));
+				model.put("token", "Bearer " + token);
+
+				return ResponseEntity.status(HttpStatus.FOUND).body(model);
+			}
+//			} else {
+//				return ResponseEntity.status(HttpStatus.CONFLICT).build();
+//			}
 
 		} else {
 			throw new NoSuchCustomerException(login.getUsername()

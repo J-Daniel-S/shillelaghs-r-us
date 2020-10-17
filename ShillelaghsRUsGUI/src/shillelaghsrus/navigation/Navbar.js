@@ -4,11 +4,13 @@ import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem } from 'mdbreact';
 import useReactRouter from 'use-react-router';
 
 import ShillelaghContext from '../context/ShillelaghContext';
+import { useAuth } from '../context/AuthContext';
 
 const navbar = (props) => {
 	// eslint-disable-next-line
 	const [shillelaghs, setShillelaghs, customer, setCustomer] = useContext(ShillelaghContext);
 	const { history } = useReactRouter();
+	const { setAuthTokens } = useAuth();
 
 	const Span = styled.span`
 		cursor: pointer;
@@ -33,6 +35,8 @@ const navbar = (props) => {
 
 	const logout = () => {
 		setCustomer(null);
+		setAuthTokens(null);
+		localStorage.setItem("tokens", null);
 	}
 
 	let theCustomer;

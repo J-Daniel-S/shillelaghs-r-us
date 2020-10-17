@@ -27,6 +27,7 @@ const adminNavbar = (props) => {
 		setAdmin(null);
 		setCustomer(null);
 		setAuthTokens(null);
+		localStorage.setItem("tokens", null);
 		history.push('/shillelaghs-r-us/home');
 	}
 

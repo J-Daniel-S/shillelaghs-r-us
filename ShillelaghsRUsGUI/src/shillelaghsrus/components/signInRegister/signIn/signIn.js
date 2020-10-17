@@ -59,6 +59,7 @@ const signIn = (props) => {
 			if (res.status === 302) {
 				res.json().then(res => {
 					setCustomer(res.customer);
+					console.log(res.token);
 					setAuthTokens(res.token);
 					if (window.location.pathname === "/shillelaghs-r-us/sign-in") {
 						history.push("/shillelaghs-r-us/home");
@@ -69,6 +70,7 @@ const signIn = (props) => {
 			} else if (res.status === 202) {
 				res.json().then(res => {
 					setAdmin(res.customer);
+					console.log(res.token);
 					setAuthTokens(res.token);
 					history.push('/admin');
 				})

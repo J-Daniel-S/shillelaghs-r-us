@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 
 import ShillelaghContext from '../../context/ShillelaghContext';
+import { useAuth } from '../../context/AuthContext';
 import { Article, AButton } from '../styles/Styles';
 
 
@@ -12,6 +13,7 @@ const account = (props) => {
 	const [shillelaghs, setShillelaghs, customer, setCustomer, cartOpen, setCartOpen, cartContents, setCartContents,
 		// eslint-disable-next-line
 		confirm, setConfirm, order, setOrder, price, setPrice, deleteConfirm, setDeleteConfirm, paymentMethod, setPaymentMethod] = useContext(ShillelaghContext);
+	const { authTokens, setAuthTokens } = useAuth();
 	const [orders, setOrders] = useState([]);
 	const [cards, setCards] = useState([]);
 	const [bankAccounts, setBankAccounts] = useState([]);
@@ -34,12 +36,15 @@ const account = (props) => {
 			setCards(theCards);
 			setBankAccounts(theAccounts);
 
+			console.log(authTokens)
+
 			fetch(
 				'http://localhost:8090/shillelaghs-r-us/orders/customer/' + customer.id,
 				{
 					method: 'GET',
 					headers: {
-						Accept: 'application/json, text/plain, */*'
+						Accept: 'application/json, text/plain, */*',
+						Authorization: authTokens
 					}
 				}
 			).then(res => {
