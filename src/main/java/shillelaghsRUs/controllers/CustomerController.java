@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import shillelaghsRUs.entities.Customer;
+import shillelaghsRUs.entities.Method;
 import shillelaghsRUs.entities.Order;
 import shillelaghsRUs.exceptions.NoSuchCustomerException;
 import shillelaghsRUs.exceptions.UpdateFailedException;
@@ -93,6 +94,10 @@ public class CustomerController {
 	@PutMapping("/{id}")
 	public ResponseEntity<Customer> editCustomer(@RequestBody Customer customerEdit, @PathVariable long id)
 			throws NoSuchCustomerException, UpdateFailedException {
+		//throws not-null exception if method isn't assigned to the customer here
+		List<Method> methods = customerEdit.getMethods();
+		methods.forEach(m -> m.setCustomer(customerEdit));
+		customerEdit.setMethods(methods);
 		boolean updated = cusRepo.update(customerEdit, id);
 		if (updated) {
 			return ResponseEntity.accepted().body(cusRepo.findById(id));
