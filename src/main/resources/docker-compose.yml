@@ -1,0 +1,36 @@
+version:  "3.8"
+services:
+    shillelaghpostgres:
+        image:  postgres:14.8
+        mem_limit:  500m
+        container_name:  shillelaghpostgres
+        restart:  always
+        networks:
+            -  shillelagh-network
+        ports:
+            -  "5432:5432"
+        environment:
+           POSTGRES_DB:  shillelaghsrus
+           POSTGRES_USER:  postgres
+           POSTGRES_PASSWORD:  taco
+           PGDATA:  /var/lib/postgresql/data/pgdata
+    shillellaghsrusapi:
+        image:  jsharper55/shillelaghs-r-us:1.0.2
+        mem_limit:  750m
+        container_name:  shillelaghapi
+        restart:  always
+        networks:
+            -  shillelagh-network
+        ports:
+            -  "8090:8090"
+        depends_on:
+            -  shillelaghpostgres
+        environment:
+            SPRING.DATASOURCE.URL:  jdbc:postgresql://shillelaghpostgres:5432/shillelaghsrus?createDatabaseIfNotExist=true
+            SPRING.DATASOURCE.USERNAME:  postgres
+            SPRING.DATASOURCE.PASSWORD:  taco
+            SPRING.DATASOURCE.DRIVER-CLASS-NAME:  org.postgresql.Driver
+            SPRING.JPA.HIBERNATE.DLL-AUTO:  update
+            SPRING.DATASOURCE.INITIALIZATION-MODE:  always
+networks:
+    shillelagh-network:
