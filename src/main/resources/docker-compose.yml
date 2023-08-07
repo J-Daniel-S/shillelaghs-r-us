@@ -1,4 +1,5 @@
 version:  "3.8"
+#uncomment for data persistence
 services:
     shillelaghpostgres:
         image:  postgres:14.8
@@ -14,6 +15,8 @@ services:
            POSTGRES_USER:  postgres
            POSTGRES_PASSWORD:  taco
            PGDATA:  /var/lib/postgresql/data/pgdata
+#        volumes:
+#            -  db:/var/lib/postgresql/data
     shillellaghsrusapi:
         image:  jsharper55/shillelaghs-r-us:1.0.2
         mem_limit:  750m
@@ -32,5 +35,19 @@ services:
             SPRING.DATASOURCE.DRIVER-CLASS-NAME:  org.postgresql.Driver
             SPRING.JPA.HIBERNATE.DLL-AUTO:  update
             SPRING.DATASOURCE.INITIALIZATION-MODE:  always
+    shillelaghsrusui:
+        image:  jsharper55/shillelagh-ui:1.0.1
+        mem_limit:  750m
+        container_name:  shillelaghui
+        restart:  always
+        networks:
+            -  shillelagh-network
+        ports:
+            -  "3000:3000"
+        depends_on:
+            -  shillellaghsrusapi
 networks:
     shillelagh-network:
+#volumes:
+#    db:
+#        driver:  local
