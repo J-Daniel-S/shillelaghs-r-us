@@ -3,6 +3,9 @@ package shillelaghsRUs.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import shillelaghsRUs.dao.CustomerRepository;
@@ -11,7 +14,7 @@ import shillelaghsRUs.exceptions.NoSuchCustomerException;
 import shillelaghsRUs.exceptions.UpdateFailedException;
 
 @Service
-public class CustomerService {
+public class CustomerService implements UserDetailsService {
 
 	@Autowired
 	private CustomerRepository cusRepo;
@@ -89,6 +92,11 @@ public class CustomerService {
 	// testing
 	public CustomerService(CustomerRepository cusRepo) {
 		this.cusRepo = cusRepo;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		return findByName(username);
 	}
 
 }
